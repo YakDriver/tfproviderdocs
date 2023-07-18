@@ -1,4 +1,4 @@
-## Attributes Reference
+## Attribute Reference
 
 The following attributes are exported:
 

@@ -33,7 +33,7 @@ func (d *Document) checkAttributesSection() error {
 		"Attribute Reference",
 	}
 
-	if headingText != expectedHeadingTexts[0] && headingText != expectedHeadingTexts[1] {
+	if headingText != expectedHeadingTexts[0] {
 		return fmt.Errorf("attribute section heading (%s) should be: %q", headingText, expectedHeadingTexts[0])
 	}
 
