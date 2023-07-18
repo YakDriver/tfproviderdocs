@@ -1,4 +1,4 @@
-## Attributes Reference
+## Attribute Reference
 
 * `aaa` - Aaa.
 * `bbb` - Bbb.

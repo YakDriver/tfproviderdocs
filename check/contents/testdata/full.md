@@ -26,9 +26,9 @@ The following arguments are supported:
 * `tags` - (Optional) Key-value map of resource tags.
 * `type` - (Optional) Type of thing.
 
-## Attributes Reference
+## Attribute Reference
 
-In addition to all arguments above, the following attributes are exported:
+This resource exports the following attributes in addition to the arguments above:
 
 * `id` - Name of thing.
 
