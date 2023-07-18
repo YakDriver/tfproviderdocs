@@ -1,6 +1,6 @@
 ## Argument Reference
 
-The following arguments are supported:
+This resource supports the following arguments:
 
 * `bbb` - (Optional) Bbb.
 * `aaa` - (Required) Aaa.
