@@ -55,8 +55,8 @@ func (d *Document) checkImportSection() error {
 		}
 
 		suffix := ". For example:"
-		if !strings.HasSuffix(text, suffix) {
-			return fmt.Errorf("import section should conclude with %q", suffix)
+		if !strings.HasSuffix(text, suffix) && !strings.Contains(text, "cannot import") {
+			return fmt.Errorf("import section should conclude with %q (or state \"You cannot import ...\")", suffix)
 		}
 	}
 
