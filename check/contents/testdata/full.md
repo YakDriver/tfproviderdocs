@@ -41,7 +41,7 @@ configuration options:
 
 ## Import
 
-Test Fulls can be imported using the `name`, e.g.
+Import Fulls using `name`. For example:
 
 ```
 $ terraform import test_full.example example

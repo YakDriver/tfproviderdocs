@@ -34,6 +34,18 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 			ExpectError:  true,
 		},
+		{
+			Name:         "wrong passive voice",
+			Path:         "testdata/import/wrong_passive_voice.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
+		{
+			Name:         "wrong eg",
+			Path:         "testdata/import/wrong_eg.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
 	}
 
 	for _, testCase := range testCases {

@@ -27,6 +27,39 @@ func (d *Document) checkImportSection() error {
 		return fmt.Errorf("import section heading (%s) should be: %s", headingText, expectedHeadingText)
 	}
 
+	paragraphs := section.Paragraphs
+	problems := [][]string{
+		{
+			"can be imported", // problem
+			"use active voice instead: Import X using A, B, C.", // fix message
+		},
+		{
+			"e.g",                          // problem
+			"instead use \"For example:\"", // fix message
+		},
+		{
+			"E.g",                          // problem
+			"instead use \"For example:\"", // fix message
+		},
+	}
+
+	if len(paragraphs) > 0 {
+		text := string(paragraphs[0].Text(d.source))
+
+		for _, v := range problems {
+			problem := v[0]
+			msg := v[1]
+			if strings.Contains(text, problem) {
+				return fmt.Errorf("import section should not include %q, %s", problem, msg)
+			}
+		}
+
+		suffix := ". For example:"
+		if !strings.HasSuffix(text, suffix) {
+			return fmt.Errorf("import section should conclude with %q", suffix)
+		}
+	}
+
 	for _, fencedCodeBlock := range section.FencedCodeBlocks {
 		text := markdown.FencedCodeBlockText(fencedCodeBlock, d.source)
 
