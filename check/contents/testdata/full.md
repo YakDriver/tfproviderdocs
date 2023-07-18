@@ -20,7 +20,7 @@ resource "test_full" "example" {
 
 ## Argument Reference
 
-The following arguments are supported:
+This resource supports the following arguments:
 
 * `name` - (Required) Name of thing.
 * `tags` - (Optional) Key-value map of resource tags.
