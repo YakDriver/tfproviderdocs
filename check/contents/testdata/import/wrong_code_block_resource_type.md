@@ -1,6 +1,6 @@
 ## Import
 
-Test Wrong Code Block Resource Types can be imported using the `name`, e.g.
+Import Test Wrong Code Block Resource Types using the `name`. For example:
 
 ```
 $ terraform import test_passing.example example
