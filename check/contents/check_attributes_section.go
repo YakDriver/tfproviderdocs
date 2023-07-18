@@ -42,6 +42,8 @@ func (d *Document) checkAttributesSection() error {
 	expectedBylineTexts := []string{
 		"This resource exports the following attributes in addition to the arguments above:",
 		"This data source exports the following attributes in addition to the arguments above:",
+		"This resource exports no additional attributes.",
+		"This data source exports no additional attributes.",
 		"In addition to all arguments above, the following attributes are exported:",
 		"No additional attributes are exported.",
 	}
