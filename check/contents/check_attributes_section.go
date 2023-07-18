@@ -31,11 +31,10 @@ func (d *Document) checkAttributesSection() error {
 	headingText := string(heading.Text(d.source))
 	expectedHeadingTexts := []string{
 		"Attribute Reference",
-		"Attributes Reference",
 	}
 
 	if headingText != expectedHeadingTexts[0] && headingText != expectedHeadingTexts[1] {
-		return fmt.Errorf("attribute section heading (%s) should be: %q (preferred) or %q", headingText, expectedHeadingTexts[0], expectedHeadingTexts[1])
+		return fmt.Errorf("attribute section heading (%s) should be: %q", headingText, expectedHeadingTexts[0])
 	}
 
 	paragraphs := section.Paragraphs
@@ -44,8 +43,6 @@ func (d *Document) checkAttributesSection() error {
 		"This data source exports the following attributes in addition to the arguments above:",
 		"This resource exports no additional attributes.",
 		"This data source exports no additional attributes.",
-		"In addition to all arguments above, the following attributes are exported:",
-		"No additional attributes are exported.",
 	}
 
 	switch len(paragraphs) {
