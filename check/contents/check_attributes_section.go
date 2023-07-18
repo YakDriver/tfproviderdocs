@@ -42,6 +42,8 @@ func (d *Document) checkAttributesSection() error {
 	expectedBylineTexts := []string{
 		"This resource exports the following attributes in addition to the arguments above:",
 		"This data source exports the following attributes in addition to the arguments above:",
+		"This resource exports no additional attributes.",
+		"This data source exports no additional attributes.",
 		"In addition to all arguments above, the following attributes are exported:",
 		"No additional attributes are exported.",
 	}
@@ -52,7 +54,16 @@ func (d *Document) checkAttributesSection() error {
 	case 1:
 		paragraphText := string(paragraphs[0].Text(d.source))
 
-		if paragraphText != expectedBylineTexts[0] && paragraphText != expectedBylineTexts[1] && paragraphText != expectedBylineTexts[2] && paragraphText != expectedBylineTexts[3] {
+		found := false
+
+		for _, v := range expectedBylineTexts {
+			if paragraphText == v {
+				found = true
+				break
+			}
+		}
+
+		if !found {
 			return fmt.Errorf("attribute section byline (%s) should be: %q, %q, %q, or %q", paragraphText, expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
 		}
 	}
