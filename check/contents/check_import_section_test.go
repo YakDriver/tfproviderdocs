@@ -51,6 +51,12 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 			ExpectError:  true,
 		},
+		{
+			Name:         "wrong without codeblock",
+			Path:         "testdata/import/wrong_no_codeblock.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
 	}
 
 	for _, testCase := range testCases {

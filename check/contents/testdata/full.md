@@ -43,6 +43,6 @@ configuration options:
 
 Import Fulls using `name`. For example:
 
-```
+```console
 $ terraform import test_full.example example
 ```

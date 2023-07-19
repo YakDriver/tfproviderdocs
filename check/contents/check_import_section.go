@@ -60,12 +60,21 @@ func (d *Document) checkImportSection() error {
 		}
 	}
 
+	if len(paragraphs) > 0 && !strings.Contains(string(paragraphs[0].Text(d.source)), "cannot import") && len(section.FencedCodeBlocks) < 1 {
+		return fmt.Errorf("import section should have a code block (or state \"You cannot import ...\")")
+	}
+
 	for _, fencedCodeBlock := range section.FencedCodeBlocks {
 		text := markdown.FencedCodeBlockText(fencedCodeBlock, d.source)
 
 		if !strings.Contains(text, d.ResourceName) {
 			return fmt.Errorf("import section code block text should contain resource name: %s", d.ResourceName)
 		}
+
+		if !strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "console") {
+			return fmt.Errorf("import section code block type should be 'console' (```console)")
+		}
+
 	}
 
 	return nil

@@ -2,6 +2,4 @@
 
 Import Passings using the `name`. For example:
 
-```console
 $ terraform import test_passing.example example
-```
