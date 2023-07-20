@@ -22,6 +22,11 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 		},
 		{
+			Name:         "passing code block after",
+			Path:         "testdata/import/passing_code_block_after.md",
+			ProviderName: "test",
+		},
+		{
 			Name:         "wrong code block resource type",
 			Path:         "testdata/import/wrong_code_block_resource_type.md",
 			ProviderName: "test",

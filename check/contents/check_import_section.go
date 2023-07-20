@@ -88,7 +88,7 @@ func (d *Document) checkImportSection() error {
 			hitConsole = true
 		}
 
-		if hitConsole && strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "terraform") {
+		if hitConsole && strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "terraform") && strings.HasPrefix(text, "import ") {
 			return fmt.Errorf("import section: all code blocks of type 'terraform' should be before code blocks of type 'console'")
 		}
 	}
