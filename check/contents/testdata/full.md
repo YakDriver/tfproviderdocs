@@ -43,6 +43,9 @@ configuration options:
 
 Import Fulls using `name`. For example:
 
-```console
-$ terraform import test_full.example example
+```terraform
+import {
+  to = test_full.example
+  id = "example"
+}
 ```

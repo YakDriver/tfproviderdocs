@@ -64,17 +64,33 @@ func (d *Document) checkImportSection() error {
 		return fmt.Errorf("import section should have a code block (or state \"You cannot import ...\")")
 	}
 
-	for _, fencedCodeBlock := range section.FencedCodeBlocks {
+	hitConsole := false
+	for i, fencedCodeBlock := range section.FencedCodeBlocks {
 		text := markdown.FencedCodeBlockText(fencedCodeBlock, d.source)
 
 		if !strings.Contains(text, d.ResourceName) {
 			return fmt.Errorf("import section code block text should contain resource name: %s", d.ResourceName)
 		}
 
-		if !strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "console") {
-			return fmt.Errorf("import section code block type should be 'console' (```console)")
+		if i == 0 && (!strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "terraform") || !strings.HasPrefix(text, "import {")) {
+			return fmt.Errorf("the first import section code block should have an import block using type 'terraform' (i.e., ```terraform\nimport {)")
 		}
 
+		if strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "console") && !strings.HasPrefix(text, "% ") {
+			return fmt.Errorf("import section code block type 'console' should begin with '%% '")
+		}
+
+		if !strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "console") && !strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "terraform") {
+			return fmt.Errorf("import section code block type should be 'console' or 'terraform' (i.e., ```console or ```terraform)")
+		}
+
+		if strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "console") {
+			hitConsole = true
+		}
+
+		if hitConsole && strings.Contains(markdown.FencedCodeBlockLanguage(fencedCodeBlock, d.source), "terraform") {
+			return fmt.Errorf("import section: all code blocks of type 'terraform' should be before code blocks of type 'console'")
+		}
 	}
 
 	return nil
