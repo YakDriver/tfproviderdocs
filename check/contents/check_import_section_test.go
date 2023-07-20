@@ -51,6 +51,24 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 			ExpectError:  true,
 		},
+		{
+			Name:         "wrong without codeblock",
+			Path:         "testdata/import/wrong_no_codeblock.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
+		{
+			Name:         "wrong console prefix",
+			Path:         "testdata/import/wrong_console_prefix.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
+		{
+			Name:         "wrong code block order",
+			Path:         "testdata/import/wrong_code_block_order.md",
+			ProviderName: "test",
+			ExpectError:  true,
+		},
 	}
 
 	for _, testCase := range testCases {
