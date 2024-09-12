@@ -17,7 +17,7 @@ go install github.com/YakDriver/tfproviderdocs
 ### Docker Install
 
 ```shell
-docker pull YakDriver/tfproviderdocs
+docker pull moab4x/tfproviderdocs
 ```
 
 ### Homebrew Install
@@ -47,7 +47,7 @@ tfproviderdocs
 Change into the directory of the Terraform Provider code and run:
 
 ```shell
-docker run -v $(pwd):/src YakDriver/tfproviderdocs
+docker run -v $(pwd):/src moab4x/tfproviderdocs
 ```
 
 ## Available Commands
