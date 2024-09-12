@@ -38,9 +38,6 @@ builds:
       - -s -w -X github.com/YakDriver/tfproviderdocs/version.Version={{.Version}} -X github.com/YakDriver/tfproviderdocs/version.VersionPrerelease=
     main: .
 
-changelog:
-  skip: true
-
 dockers:
   - build_flag_templates:
       - "--label=org.label-schema.schema-version=1.0"
