@@ -14,9 +14,7 @@ const (
 	ResourceTypeResource   = "resource"
 
 	// Terraform Registry Storage Limits
-	// https://www.terraform.io/docs/registry/providers/docs.html#storage-limits
-	RegistryMaximumNumberOfFiles = 2000
-	RegistryMaximumSizeOfFile    = 500000 // 500KB
+	RegistryMaximumSizeOfFile = 500000 // 500KB
 )
 
 type Check struct {
@@ -66,10 +64,6 @@ func (check *Check) Run(directories map[string][]string) error {
 	}
 
 	if err := MixedDirectoriesCheck(directories); err != nil {
-		return err
-	}
-
-	if err := NumberOfFilesCheck(directories); err != nil {
 		return err
 	}
 
