@@ -44,9 +44,9 @@ dockers:
       - "--label=org.label-schema.version={{.Version}}"
       - "--label=org.label-schema.name={{.ProjectName}}"
     image_templates:
-      - 'YakDriver/tfproviderdocs:{{ .Version }}'
-      - 'YakDriver/tfproviderdocs:{{ .Major }}.{{ .Minor }}'
-      - 'YakDriver/tfproviderdocs:latest'
+      - 'moab4x/tfproviderdocs:{{ .Version }}'
+      - 'moab4x/tfproviderdocs:{{ .Major }}.{{ .Minor }}'
+      - 'moab4x/tfproviderdocs:latest'
 
 milestones:
   - close: true
