@@ -22,6 +22,9 @@ brews:
       bin.install "tfproviderdocs"
     test: |
       system "#{bin}/tfproviderdocs -v"
+    commit_author:
+      name: yakdriverbot
+      email: f1formula.juan@gmail.com
 
 builds:
   - env:
