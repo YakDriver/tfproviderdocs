@@ -10,13 +10,18 @@ before:
     - go mod download
 
 brews:
-  - dependencies:
+  -
+    name: tfproviderdocs
+    dependencies:
       - go
     description: Terraform Provider Documentation Tool
     directory: Formula
     repository:
       owner: YakDriver
       name: homebrew-tap
+      token: ${{ secrets.YAKBOT_GITHUB_TOKEN }}
+      pull_request:
+        enabled: true
     homepage: https://github.com/YakDriver/tfproviderdocs
     install: |
       bin.install "tfproviderdocs"
