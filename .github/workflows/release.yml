@@ -70,12 +70,17 @@ jobs:
         with:
           args: check
 
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Release
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.BEEFY_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           PR_TOKEN: ${{ secrets.YAKBOT_GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
         with:
           args: release --release-notes RELEASE-NOTES.md --clean
 
