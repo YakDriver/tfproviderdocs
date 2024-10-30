@@ -1,20 +1,19 @@
-name: Check Token Expiration
+name: Token Expiration
 
 on:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
   workflow_dispatch: # Allows manual triggering of the workflow
-  pull_request:
 
 jobs:
   check_token_expiration:
+    name: Check
     runs-on: ubuntu-latest
     steps:
       - name: Check token expiration
         run: |
           # Set the expiration date of the token
-          #TOKEN_EXPIRATION_DATE="2025-01-25"
-          TOKEN_EXPIRATION_DATE="2024-11-03"
+          TOKEN_EXPIRATION_DATE="2025-01-25"
 
           # Get the current date
           CURRENT_DATE=$(date -u +"%Y-%m-%d")
