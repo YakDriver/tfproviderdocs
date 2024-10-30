@@ -10,16 +10,18 @@ import (
 const (
 	CdktfIndexDirectory = `cdktf`
 
-	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,guides,resources},website/docs}/**/*`
+	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,ephemerals,guides,resources},website/docs}/**/*`
 
 	LegacyIndexDirectory       = `website/docs`
 	LegacyDataSourcesDirectory = `d`
+	LegacyEphemeralsDirectory  = `ephemerals`
 	LegacyFunctionsDirectory   = `functions`
 	LegacyGuidesDirectory      = `guides`
 	LegacyResourcesDirectory   = `r`
 
 	RegistryIndexDirectory       = `docs`
 	RegistryDataSourcesDirectory = `data-sources`
+	RegistryEphemeralsDirectory  = `ephemerals`
 	RegistryFunctionsDirectory   = `functions`
 	RegistryGuidesDirectory      = `guides`
 	RegistryResourcesDirectory   = `resources`
@@ -28,6 +30,7 @@ const (
 var ValidLegacyDirectories = []string{
 	LegacyIndexDirectory,
 	LegacyIndexDirectory + "/" + LegacyDataSourcesDirectory,
+	LegacyIndexDirectory + "/" + LegacyEphemeralsDirectory,
 	LegacyIndexDirectory + "/" + LegacyFunctionsDirectory,
 	LegacyIndexDirectory + "/" + LegacyGuidesDirectory,
 	LegacyIndexDirectory + "/" + LegacyResourcesDirectory,
@@ -36,6 +39,7 @@ var ValidLegacyDirectories = []string{
 var ValidRegistryDirectories = []string{
 	RegistryIndexDirectory,
 	RegistryIndexDirectory + "/" + RegistryDataSourcesDirectory,
+	RegistryIndexDirectory + "/" + RegistryEphemeralsDirectory,
 	RegistryIndexDirectory + "/" + RegistryFunctionsDirectory,
 	RegistryIndexDirectory + "/" + RegistryGuidesDirectory,
 	RegistryIndexDirectory + "/" + RegistryResourcesDirectory,
@@ -51,6 +55,7 @@ var ValidCdktfLanguages = []string{
 
 var ValidLegacySubdirectories = []string{
 	LegacyDataSourcesDirectory,
+	LegacyEphemeralsDirectory,
 	LegacyFunctionsDirectory,
 	LegacyGuidesDirectory,
 	LegacyResourcesDirectory,
@@ -58,6 +63,7 @@ var ValidLegacySubdirectories = []string{
 
 var ValidRegistrySubdirectories = []string{
 	RegistryDataSourcesDirectory,
+	RegistryEphemeralsDirectory,
 	RegistryFunctionsDirectory,
 	RegistryGuidesDirectory,
 	RegistryResourcesDirectory,

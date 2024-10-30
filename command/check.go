@@ -26,9 +26,11 @@ type CheckCommandConfig struct {
 	EnableContentsCheck              bool
 	IgnoreCdktfMissingFiles          bool
 	IgnoreFileMismatchDataSources    string
+	IgnoreFileMismatchEphemerals     string
 	IgnoreFileMismatchFunctions      string
 	IgnoreFileMismatchResources      string
 	IgnoreFileMissingDataSources     string
+	IgnoreFileMissingEphemerals      string
 	IgnoreFileMissingFunctions       string
 	IgnoreFileMissingResources       string
 	LogLevel                         string
@@ -57,9 +59,11 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-enable-contents-check", "(Experimental) Enable contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-cdktf-missing-files", "Ignore checks for missing CDK for Terraform documentation files when iteratively introducing them in large providers.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-ephemerals", "Comma separated list of ephemerals to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-functions", "Comma separated list of functions to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-resources", "Comma separated list of resources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-data-sources", "Comma separated list of data sources to ignore missing files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-ephemerals", "Comma separated list of ephemerals to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-functions", "Comma separated list of functions to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-resources", "Comma separated list of resources to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-provider-name", "Terraform Provider short name (e.g. aws). Automatically determined if -provider-source is given or if current working directory or provided path is prefixed with terraform-provider-*.")
@@ -98,9 +102,11 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.BoolVar(&config.EnableContentsCheck, "enable-contents-check", false, "")
 	flags.BoolVar(&config.IgnoreCdktfMissingFiles, "ignore-cdktf-missing-files", false, "")
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
+	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchFunctions, "ignore-file-mismatch-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchResources, "ignore-file-mismatch-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingDataSources, "ignore-file-missing-data-sources", "", "")
+	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMissingResources, "ignore-file-missing-resources", "", "")
 	flags.StringVar(&config.ProviderName, "provider-name", "", "")
@@ -194,6 +200,11 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMismatchDataSources = strings.Split(v, ",")
 	}
 
+	var ignoreFileMismatchEphemerals []string
+	if v := config.IgnoreFileMismatchEphemerals; v != "" {
+		ignoreFileMismatchEphemerals = strings.Split(v, ",")
+	}
+
 	var ignoreFileMismatchFunctions []string
 	if v := config.IgnoreFileMismatchFunctions; v != "" {
 		ignoreFileMismatchFunctions = strings.Split(v, ",")
@@ -209,6 +220,11 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMissingDataSources = strings.Split(v, ",")
 	}
 
+	var ignoreFileMissingEphemerals []string
+	if v := config.IgnoreFileMissingEphemerals; v != "" {
+		ignoreFileMissingEphemerals = strings.Split(v, ",")
+	}
+
 	var ignoreFileMissingFunctions []string
 	if v := config.IgnoreFileMissingFunctions; v != "" {
 		ignoreFileMissingFunctions = strings.Split(v, ",")
@@ -219,7 +235,7 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMissingResources = strings.Split(v, ",")
 	}
 
-	var dataSourceNames, resourceNames, functionNames []string
+	var dataSourceNames, ephemeralNames, resourceNames, functionNames []string
 	if config.ProvidersSchemaJson != "" {
 		ps, err := providerSchemas(config.ProvidersSchemaJson)
 
@@ -237,6 +253,7 @@ Check that the current working directory or provided path is prefixed with terra
 		}
 
 		dataSourceNames = providerSchemasDataSources(ps, config.ProviderName, config.ProviderSource)
+		ephemeralNames = providerSchemasEphemerals(ps, config.ProviderName, config.ProviderSource)
 		functionNames = providerSchemasFunctions(ps, config.ProviderName, config.ProviderSource)
 		resourceNames = providerSchemasResources(ps, config.ProviderName, config.ProviderSource)
 	}
@@ -245,18 +262,13 @@ Check that the current working directory or provided path is prefixed with terra
 		BasePath: config.Path,
 	}
 	checkOpts := &check.CheckOptions{
-		DataSourceFileMismatch: &check.FileMismatchOptions{
-			IgnoreFileMismatch: ignoreFileMismatchDataSources,
-			IgnoreFileMissing:  ignoreFileMissingDataSources,
-			ProviderName:       config.ProviderName,
-			ResourceType:       check.ResourceTypeDataSource,
-			ResourceNames:      dataSourceNames,
-		},
-		FunctionFileMismatch: &check.FileMismatchOptions{
-			IgnoreFileMismatch: ignoreFileMismatchFunctions,
-			IgnoreFileMissing:  ignoreFileMissingFunctions,
-			ResourceType:       check.ResourceTypeFunction,
-			ResourceNames:      functionNames,
+		// data source
+		RegistryDataSourceFile: &check.RegistryDataSourceFileOptions{
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
 		},
 		LegacyDataSourceFile: &check.LegacyDataSourceFileOptions{
 			FileOptions: fileOpts,
@@ -265,17 +277,16 @@ Check that the current working directory or provided path is prefixed with terra
 				RequireSubcategory:   config.RequireResourceSubcategory,
 			},
 		},
-		LegacyGuideFile: &check.LegacyGuideFileOptions{
-			FileOptions: fileOpts,
-			FrontMatter: &check.FrontMatterOptions{
-				AllowedSubcategories: allowedGuideSubcategories,
-				RequireSubcategory:   config.RequireGuideSubcategory,
-			},
+		DataSourceFileMismatch: &check.FileMismatchOptions{
+			IgnoreFileMismatch: ignoreFileMismatchDataSources,
+			IgnoreFileMissing:  ignoreFileMissingDataSources,
+			ProviderName:       config.ProviderName,
+			ResourceType:       check.ResourceTypeDataSource,
+			ResourceNames:      dataSourceNames,
 		},
-		LegacyIndexFile: &check.LegacyIndexFileOptions{
-			FileOptions: fileOpts,
-		},
-		LegacyResourceFile: &check.LegacyResourceFileOptions{
+
+		// ephemeral
+		RegistryEphemeralFile: &check.RegistryEphemeralFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
@@ -287,26 +298,62 @@ Check that the current working directory or provided path is prefixed with terra
 			},
 			ProviderName: config.ProviderName,
 		},
-		ProviderName:   config.ProviderName,
-		ProviderSource: config.ProviderSource,
-		RegistryDataSourceFile: &check.RegistryDataSourceFileOptions{
+		LegacyEphemeralFile: &check.LegacyEphemeralFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                config.EnableContentsCheck,
+				RequireSchemaOrdering: config.RequireSchemaOrdering,
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		EphemeralFileMismatch: &check.FileMismatchOptions{
+			IgnoreFileMismatch: ignoreFileMismatchEphemerals,
+			IgnoreFileMissing:  ignoreFileMissingEphemerals,
+			ProviderName:       config.ProviderName,
+			ResourceType:       check.ResourceTypeEphemeral,
+			ResourceNames:      ephemeralNames,
+		},
+
+		// function
+		RegistryFunctionFile: &check.RegistryFunctionFileOptions{
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
 				AllowedSubcategories: allowedResourceSubcategories,
 				RequireSubcategory:   config.RequireResourceSubcategory,
 			},
 		},
-		RegistryGuideFile: &check.RegistryGuideFileOptions{
+		LegacyFunctionFile: &check.LegacyFunctionFileOptions{
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
-				AllowedSubcategories: allowedGuideSubcategories,
-				RequireSubcategory:   config.RequireGuideSubcategory,
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
 			},
 		},
-		RegistryIndexFile: &check.RegistryIndexFileOptions{
-			FileOptions: fileOpts,
+		FunctionFileMismatch: &check.FileMismatchOptions{
+			IgnoreFileMismatch: ignoreFileMismatchFunctions,
+			IgnoreFileMissing:  ignoreFileMissingFunctions,
+			ResourceType:       check.ResourceTypeFunction,
+			ResourceNames:      functionNames,
 		},
+
+		// resource
 		RegistryResourceFile: &check.RegistryResourceFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                config.EnableContentsCheck,
+				RequireSchemaOrdering: config.RequireSchemaOrdering,
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		LegacyResourceFile: &check.LegacyResourceFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
@@ -325,6 +372,34 @@ Check that the current working directory or provided path is prefixed with terra
 			ResourceType:       check.ResourceTypeResource,
 			ResourceNames:      resourceNames,
 		},
+
+		// guide
+		RegistryGuideFile: &check.RegistryGuideFileOptions{
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedGuideSubcategories,
+				RequireSubcategory:   config.RequireGuideSubcategory,
+			},
+		},
+		LegacyGuideFile: &check.LegacyGuideFileOptions{
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedGuideSubcategories,
+				RequireSubcategory:   config.RequireGuideSubcategory,
+			},
+		},
+
+		// index
+		RegistryIndexFile: &check.RegistryIndexFileOptions{
+			FileOptions: fileOpts,
+		},
+		LegacyIndexFile: &check.LegacyIndexFileOptions{
+			FileOptions: fileOpts,
+		},
+
+		// general
+		ProviderName:            config.ProviderName,
+		ProviderSource:          config.ProviderSource,
 		IgnoreCdktfMissingFiles: config.IgnoreCdktfMissingFiles,
 	}
 
@@ -435,6 +510,36 @@ func providerSchemasDataSources(ps *tfjson.ProviderSchemas, providerName string,
 	log.Printf("[DEBUG] Found provider schema data sources: %v", dataSources)
 
 	return dataSources
+}
+
+// providerSchemasEphemerals returns all ephemeral names from a terraform providers schema -json provider.
+func providerSchemasEphemerals(ps *tfjson.ProviderSchemas, providerName string, providerSource string) []string {
+	if ps == nil || ps.Schemas == nil {
+		return nil
+	}
+
+	provider, ok := ps.Schemas[providerSource]
+
+	if !ok {
+		provider, ok = ps.Schemas[providerName]
+	}
+
+	if !ok {
+		log.Printf("[WARN] Provider source (%s) and name (%s) not found in provider schema", providerSource, providerName)
+		return nil
+	}
+
+	ephemerals := make([]string, 0, len(provider.EphemeralResourceSchemas))
+
+	for name := range provider.EphemeralResourceSchemas {
+		ephemerals = append(ephemerals, name)
+	}
+
+	sort.Strings(ephemerals)
+
+	log.Printf("[DEBUG] Found provider schema ephemerals: %v", ephemerals)
+
+	return ephemerals
 }
 
 // providerSchemasFunctions returns all function names from a terraform providers schema -json provider.

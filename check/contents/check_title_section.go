@@ -20,8 +20,17 @@ func (d *Document) checkTitleSection() error {
 
 	headingText := string(heading.Text(d.source))
 
-	if !strings.HasPrefix(headingText, "Data Source: ") && !strings.HasPrefix(headingText, "Resource: ") {
-		return fmt.Errorf("title section heading (%s) should have prefix: \"Data Source: \" or \"Resource: \"", headingText)
+	validPrefixes := []string{"Data Source", "Ephemeral", "Resource"}
+	isValidPrefix := false
+	for _, prefix := range validPrefixes {
+		if strings.HasPrefix(headingText, fmt.Sprintf("%s: ", prefix)) {
+			isValidPrefix = true
+			break
+		}
+	}
+
+	if !isValidPrefix {
+		return fmt.Errorf("title section heading (%s) should have one of these prefixes: %v", headingText, validPrefixes)
 	}
 
 	if len(section.FencedCodeBlocks) > 0 {
