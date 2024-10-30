@@ -78,12 +78,3 @@ jobs:
         with:
           args: release --release-notes RELEASE-NOTES.md --clean
 
-      - name: Create pull request for Homebrew Tap
-        uses: peter-evans/create-pull-request@v5.0.0
-        with:
-          token: ${{ secrets.YAKBOT_GITHUB_TOKEN }} # Expires Jan 28 2025
-          commit-message: "Brew formula update for tfproviderdocs version {{ steps.goreleaser.outputs.version }}"
-          branch: update-homebrew-tap
-          title: "Brew formula update for tfproviderdocs version {{ steps.goreleaser.outputs.version }}"
-          body: "This pull request updates the Homebrew formula for tfproviderdocs to version {{ steps.goreleaser.outputs.version }}."
-          labels: homebrew
