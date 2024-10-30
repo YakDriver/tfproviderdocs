@@ -22,8 +22,9 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum || \
             (echo; echo "Unexpected difference in go.mod/go.sum files. Run 'go mod tidy' command or revert any go.mod/go.sum changes and commit."; exit 1)
+
   go_test:
-    name: Go test
+    name: Run all Go tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -31,6 +32,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
       - run: go test ./...
+
   goreleaser:
     name: GoReleaser
     needs: [go_mod, go_test]
@@ -63,12 +65,12 @@ jobs:
         run: |
           sed -n -e "1{/# v/d;}" -e "2{/^$/d;}" -e "/# $(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags)/q;p" CHANGELOG.md > RELEASE-NOTES.md
 
-      - name: Check GoReleaser configuration
+      - name: Check configuration
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         with:
           args: check
 
-      - name: Release with GoReleaser
+      - name: Release
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.BEEFY_TOKEN }}
@@ -76,7 +78,7 @@ jobs:
         with:
           args: release --release-notes RELEASE-NOTES.md --clean
 
-      - name: Create Pull Request for Homebrew Tap
+      - name: Create pull request for Homebrew Tap
         uses: peter-evans/create-pull-request@v5.0.0
         with:
           token: ${{ secrets.YAKBOT_GITHUB_TOKEN }} # Expires Jan 28 2025
