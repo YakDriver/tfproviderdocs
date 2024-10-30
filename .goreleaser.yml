@@ -19,7 +19,7 @@ brews:
     repository:
       owner: YakDriver
       name: homebrew-tap
-      branch: main
+      branch: "update-tfproviderdocs-{{ .Env.RELEASE_TAG }}"
       token: "{{ .Env.PR_TOKEN }}"
       pull_request:
         enabled: true
