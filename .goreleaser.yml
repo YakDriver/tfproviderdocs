@@ -19,7 +19,7 @@ brews:
     repository:
       owner: YakDriver
       name: homebrew-tap
-      token: ${{ secrets.YAKBOT_GITHUB_TOKEN }}
+      token: "{{ .Env.PR_TOKEN }}"
       pull_request:
         enabled: true
     homepage: https://github.com/YakDriver/tfproviderdocs
@@ -58,6 +58,7 @@ dockers:
 
 milestones:
   - close: true
+  - fail_on_error: false
 
 signs:
   - artifacts: checksum

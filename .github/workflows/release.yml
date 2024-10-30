@@ -75,6 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BEEFY_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          PR_TOKEN: ${{ secrets.YAKBOT_GITHUB_TOKEN }}
         with:
           args: release --release-notes RELEASE-NOTES.md --clean
 
