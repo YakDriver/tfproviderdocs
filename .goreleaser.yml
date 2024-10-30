@@ -23,8 +23,8 @@ brews:
     test: |
       system "#{bin}/tfproviderdocs -v"
     commit_author:
-      name: goreleaserbot
-      email: goreleaser@carlosbecker.com
+      name: yakdriverbot
+      email: yakdriver@example.com
 
 builds:
   - env:
