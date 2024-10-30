@@ -70,6 +70,18 @@ func TestCheck(t *testing.T) {
 				testCase.Options.DataSourceFileMismatch.ProviderName = "test"
 			}
 
+			if testCase.Options.EphemeralFileMismatch == nil {
+				testCase.Options.EphemeralFileMismatch = &FileMismatchOptions{}
+			}
+
+			if testCase.Options.EphemeralFileMismatch.FileOptions == nil {
+				testCase.Options.EphemeralFileMismatch.FileOptions = fileOpts
+			}
+
+			if testCase.Options.EphemeralFileMismatch.ProviderName == "" {
+				testCase.Options.EphemeralFileMismatch.ProviderName = "test"
+			}
+
 			if testCase.Options.FunctionFileMismatch == nil {
 				testCase.Options.FunctionFileMismatch = &FileMismatchOptions{}
 			}
@@ -88,6 +100,14 @@ func TestCheck(t *testing.T) {
 
 			if testCase.Options.LegacyDataSourceFile.FileOptions == nil {
 				testCase.Options.LegacyDataSourceFile.FileOptions = fileOpts
+			}
+
+			if testCase.Options.LegacyEphemeralFile == nil {
+				testCase.Options.LegacyEphemeralFile = &LegacyEphemeralFileOptions{}
+			}
+
+			if testCase.Options.LegacyEphemeralFile.FileOptions == nil {
+				testCase.Options.LegacyEphemeralFile.FileOptions = fileOpts
 			}
 
 			if testCase.Options.LegacyFunctionFile == nil {
@@ -132,6 +152,14 @@ func TestCheck(t *testing.T) {
 
 			if testCase.Options.RegistryDataSourceFile.FileOptions == nil {
 				testCase.Options.RegistryDataSourceFile.FileOptions = fileOpts
+			}
+
+			if testCase.Options.RegistryEphemeralFile == nil {
+				testCase.Options.RegistryEphemeralFile = &RegistryEphemeralFileOptions{}
+			}
+
+			if testCase.Options.RegistryEphemeralFile.FileOptions == nil {
+				testCase.Options.RegistryEphemeralFile.FileOptions = fileOpts
 			}
 
 			if testCase.Options.RegistryFunctionFile == nil {
