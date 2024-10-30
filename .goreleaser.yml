@@ -19,6 +19,7 @@ brews:
     repository:
       owner: YakDriver
       name: homebrew-tap
+      branch: main
       token: "{{ .Env.PR_TOKEN }}"
       pull_request:
         enabled: true
