@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v*.*.*"
 
 permissions:
   # GoReleaser uses separate token for publishing to Homebrew repository
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5.1.0
         with:
           go-version-file: 'go.mod'
-      - name: go mod
+      - name: Go mod
         run: |
           go mod tidy
           git diff --exit-code -- go.mod go.sum || \
@@ -32,7 +32,7 @@ jobs:
           go-version-file: 'go.mod'
       - run: go test ./...
   goreleaser:
-    name: goreleaser
+    name: GoReleaser
     needs: [go_mod, go_test]
     runs-on: ubuntu-latest
     steps:
@@ -79,7 +79,7 @@ jobs:
       - name: Create Pull Request for Homebrew Tap
         uses: peter-evans/create-pull-request@v5.0.0
         with:
-          token: ${{ secrets.BEEFY_TOKEN }}
+          token: ${{ secrets.YAKBOT_GITHUB_TOKEN }} # Expires Jan 28 2025
           commit-message: "Brew formula update for tfproviderdocs version {{ steps.goreleaser.outputs.version }}"
           branch: update-homebrew-tap
           title: "Brew formula update for tfproviderdocs version {{ steps.goreleaser.outputs.version }}"

@@ -24,7 +24,7 @@ brews:
       system "#{bin}/tfproviderdocs -v"
     commit_author:
       name: yakdriverbot
-      email: yakdriver@example.com
+      email: f1formula.juan@gmail.com
 
 builds:
   - env:
