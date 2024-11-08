@@ -10,18 +10,18 @@ import (
 const (
 	CdktfIndexDirectory = `cdktf`
 
-	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,ephemerals,guides,resources},website/docs}/**/*`
+	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,ephemeral-resources,guides,resources},website/docs}/**/*`
 
 	LegacyIndexDirectory       = `website/docs`
 	LegacyDataSourcesDirectory = `d`
-	LegacyEphemeralsDirectory  = `ephemerals`
+	LegacyEphemeralsDirectory  = `ephemeral-resources`
 	LegacyFunctionsDirectory   = `functions`
 	LegacyGuidesDirectory      = `guides`
 	LegacyResourcesDirectory   = `r`
 
 	RegistryIndexDirectory       = `docs`
 	RegistryDataSourcesDirectory = `data-sources`
-	RegistryEphemeralsDirectory  = `ephemerals`
+	RegistryEphemeralsDirectory  = `ephemeral-resources`
 	RegistryFunctionsDirectory   = `functions`
 	RegistryGuidesDirectory      = `guides`
 	RegistryResourcesDirectory   = `resources`
