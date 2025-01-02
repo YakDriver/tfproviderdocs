@@ -28,6 +28,10 @@ func TestCheck(t *testing.T) {
 			BasePath: "testdata/valid-legacy-directories-with-cdktf",
 		},
 		{
+			Name:     "valid legacy directories with ds store",
+			BasePath: "testdata/valid-legacy-directories-with-dsstore",
+		},
+		{
 			Name:     "valid mixed directories",
 			BasePath: "testdata/valid-mixed-directories",
 		},

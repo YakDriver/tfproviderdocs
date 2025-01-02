@@ -16,6 +16,7 @@ type FileOptions struct {
 	BasePath string
 }
 
+// FullPath returns the full path of the file, combining path portions from opts.BasePath and path.
 func (opts *FileOptions) FullPath(path string) string {
 	if opts.BasePath != "" {
 		return filepath.Join(opts.BasePath, path)
@@ -38,4 +39,25 @@ func FileSizeCheck(fullpath string) error {
 	}
 
 	return nil
+}
+
+const (
+	FileIgnoreDSStore = `.DS_Store`
+)
+
+var IgnoreFiles = []string{
+	FileIgnoreDSStore,
+}
+
+// FileIgnoreCheck checks if the file should be ignored.
+func FileIgnoreCheck(path string) bool {
+	fileName := filepath.Base(path)
+
+	for _, igfi := range IgnoreFiles {
+		if igfi == fileName {
+			return true
+		}
+	}
+
+	return false
 }

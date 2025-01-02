@@ -51,6 +51,11 @@ func (check *LegacyIndexFileCheck) Run(path string) error {
 
 	log.Printf("[DEBUG] Checking file: %s", fullpath)
 
+	if FileIgnoreCheck(path) {
+		log.Printf("[DEBUG] Skipping: %s", path)
+		return nil
+	}
+
 	if err := LegacyFileExtensionCheck(path); err != nil {
 		return fmt.Errorf("%s: error checking file extension: %w", path, err)
 	}

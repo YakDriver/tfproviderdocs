@@ -88,3 +88,43 @@ func TestFullPath(t *testing.T) {
 		})
 	}
 }
+
+func TestFileIgnoreCheck(t *testing.T) {
+	testCases := []struct {
+		Name   string
+		Path   string
+		Expect bool
+	}{
+		{
+			Name:   "ignore .DS_Store file",
+			Path:   "/path/to/.DS_Store",
+			Expect: true,
+		},
+		{
+			Name:   "do not ignore other files",
+			Path:   "/path/to/otherfile",
+			Expect: false,
+		},
+		{
+			Name:   "ignore .DS_Store file in nested directory",
+			Path:   "/another/path/.DS_Store",
+			Expect: true,
+		},
+		{
+			Name:   "do not ignore hidden files other than .DS_Store",
+			Path:   "/path/to/.hiddenfile",
+			Expect: false,
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			got := FileIgnoreCheck(testCase.Path)
+			want := testCase.Expect
+
+			if got != want {
+				t.Errorf("expected %v, got %v", want, got)
+			}
+		})
+	}
+}
