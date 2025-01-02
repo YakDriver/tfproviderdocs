@@ -59,12 +59,18 @@ func NewLegacyEphemeralFileCheck(opts *LegacyEphemeralFileOptions) *LegacyEpheme
 func (check *LegacyEphemeralFileCheck) Run(path string, exampleLanguage string) error {
 	fullpath := check.Options.FullPath(path)
 
+	log.Printf("[DEBUG] Checking file: %s", fullpath)
+
 	// skip cdktf directories
 	if IsValidCdktfDirectory(path) {
+		log.Printf("[DEBUG] Skipping: %s", path)
 		return nil
 	}
 
-	log.Printf("[DEBUG] Checking file: %s", fullpath)
+	if FileIgnoreCheck(path) {
+		log.Printf("[DEBUG] Skipping: %s", path)
+		return nil
+	}
 
 	if err := LegacyFileExtensionCheck(path); err != nil {
 		return fmt.Errorf("%s: error checking file extension: %w", path, err)
