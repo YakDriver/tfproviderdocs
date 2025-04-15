@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/terraform-json v0.24.0
 	github.com/mattn/go-colorable v0.1.14
 	github.com/mitchellh/cli v1.1.5
-	github.com/yuin/goldmark v1.7.8
+	github.com/yuin/goldmark v1.7.9
 	github.com/yuin/goldmark-meta v1.1.0
 	gopkg.in/yaml.v2 v2.4.0
 )
