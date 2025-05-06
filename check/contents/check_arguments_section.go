@@ -41,6 +41,8 @@ func (d *Document) checkArgumentsSection() error {
 		"The following arguments are required:",
 		"The following arguments are optional:",
 		"This resource does not support any arguments.",
+		"This data source does not support any arguments.",
+		"This data source supports the following arguments:",
 	}
 
 	switch len(paragraphs) {

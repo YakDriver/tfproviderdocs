@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/hashicorp/go-multierror"
 )
@@ -11,6 +12,7 @@ import (
 type LegacyDataSourceFileOptions struct {
 	*FileOptions
 
+	Contents    *ContentsOptions
 	FrontMatter *FrontMatterOptions
 }
 
@@ -29,6 +31,10 @@ func NewLegacyDataSourceFileCheck(opts *LegacyDataSourceFileOptions) *LegacyData
 		check.Options = &LegacyDataSourceFileOptions{}
 	}
 
+	if check.Options.Contents == nil {
+		check.Options.Contents = &ContentsOptions{}
+	}
+
 	if check.Options.FileOptions == nil {
 		check.Options.FileOptions = &FileOptions{}
 	}
@@ -45,7 +51,7 @@ func NewLegacyDataSourceFileCheck(opts *LegacyDataSourceFileOptions) *LegacyData
 	return check
 }
 
-func (check *LegacyDataSourceFileCheck) Run(path string) error {
+func (check *LegacyDataSourceFileCheck) Run(path string, exampleLanguage string) error {
 	fullpath := check.Options.FullPath(path)
 
 	log.Printf("[DEBUG] Checking file: %s", fullpath)
@@ -73,14 +79,20 @@ func (check *LegacyDataSourceFileCheck) Run(path string) error {
 		return fmt.Errorf("%s: error checking file frontmatter: %w", path, err)
 	}
 
+	// We don't want to check the content for CDKTF files since they are converted
+	if !IsValidCdktfDirectory(filepath.Dir(fullpath)) {
+		if err := NewContentsCheck(check.Options.Contents).Run(fullpath, exampleLanguage); err != nil {
+			return fmt.Errorf("%s: error checking file contents: %w", path, err)
+		}
+	}
 	return nil
 }
 
-func (check *LegacyDataSourceFileCheck) RunAll(files []string) error {
+func (check *LegacyDataSourceFileCheck) RunAll(files []string, exampleLanguage string) error {
 	var result *multierror.Error
 
 	for _, file := range files {
-		if err := check.Run(file); err != nil {
+		if err := check.Run(file, exampleLanguage); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}

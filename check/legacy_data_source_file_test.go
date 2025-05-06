@@ -55,7 +55,7 @@ func TestLegacyDataSourceFileCheck(t *testing.T) {
 				}
 			}
 
-			got := NewLegacyDataSourceFileCheck(testCase.Options).Run(testCase.Path)
+			got := NewLegacyDataSourceFileCheck(testCase.Options).Run(testCase.Path, "terraform")
 
 			if got == nil && testCase.ExpectError {
 				t.Errorf("expected error, got no error")
