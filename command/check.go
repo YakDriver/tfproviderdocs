@@ -264,6 +264,10 @@ Check that the current working directory or provided path is prefixed with terra
 	checkOpts := &check.CheckOptions{
 		// data source
 		RegistryDataSourceFile: &check.RegistryDataSourceFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                config.EnableContentsCheck,
+				RequireSchemaOrdering: config.RequireSchemaOrdering,
+			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
 				AllowedSubcategories: allowedResourceSubcategories,
@@ -271,6 +275,10 @@ Check that the current working directory or provided path is prefixed with terra
 			},
 		},
 		LegacyDataSourceFile: &check.LegacyDataSourceFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                config.EnableContentsCheck,
+				RequireSchemaOrdering: config.RequireSchemaOrdering,
+			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
 				AllowedSubcategories: allowedResourceSubcategories,

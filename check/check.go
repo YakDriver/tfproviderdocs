@@ -76,7 +76,7 @@ func (check *Check) Run(directories map[string][]string) error {
 			result = multierror.Append(result, err)
 		}
 
-		if err := NewRegistryDataSourceFileCheck(check.Options.RegistryDataSourceFile).RunAll(files); err != nil {
+		if err := NewRegistryDataSourceFileCheck(check.Options.RegistryDataSourceFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
@@ -131,7 +131,7 @@ func (check *Check) Run(directories map[string][]string) error {
 				}
 			}
 
-			if err := NewRegistryDataSourceFileCheck(check.Options.RegistryDataSourceFile).RunAll(files); err != nil {
+			if err := NewRegistryDataSourceFileCheck(check.Options.RegistryDataSourceFile).RunAll(files, cdktfLanguage); err != nil {
 				result = multierror.Append(result, err)
 			}
 		}
@@ -159,7 +159,7 @@ func (check *Check) Run(directories map[string][]string) error {
 			result = multierror.Append(result, err)
 		}
 
-		if err := NewLegacyDataSourceFileCheck(check.Options.LegacyDataSourceFile).RunAll(legacyDataSourcesFiles); err != nil {
+		if err := NewLegacyDataSourceFileCheck(check.Options.LegacyDataSourceFile).RunAll(legacyDataSourcesFiles, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
@@ -214,7 +214,7 @@ func (check *Check) Run(directories map[string][]string) error {
 				}
 			}
 
-			if err := NewLegacyDataSourceFileCheck(check.Options.LegacyDataSourceFile).RunAll(files); err != nil {
+			if err := NewLegacyDataSourceFileCheck(check.Options.LegacyDataSourceFile).RunAll(files, cdktfLanguage); err != nil {
 				result = multierror.Append(result, err)
 			}
 		}

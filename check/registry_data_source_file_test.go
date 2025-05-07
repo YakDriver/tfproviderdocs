@@ -55,7 +55,7 @@ func TestRegistryDataSourceFileCheck(t *testing.T) {
 				}
 			}
 
-			got := NewRegistryDataSourceFileCheck(testCase.Options).Run(testCase.Path)
+			got := NewRegistryDataSourceFileCheck(testCase.Options).Run(testCase.Path, "terraform")
 
 			if got == nil && testCase.ExpectError {
 				t.Errorf("expected error, got no error")
