@@ -1,8 +1,8 @@
 module github.com/YakDriver/tfproviderdocs
 
-go 1.22
+go 1.23.0
 
-toolchain go1.23.2
+toolchain go1.24.3
 
 require (
 	github.com/bmatcuk/doublestar v1.3.4
@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/terraform-json v0.24.0
 	github.com/mattn/go-colorable v0.1.14
 	github.com/mitchellh/cli v1.1.5
-	github.com/yuin/goldmark v1.7.8
+	github.com/yuin/goldmark v1.7.11
 	github.com/yuin/goldmark-meta v1.1.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -34,9 +34,9 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
-	github.com/spf13/cast v1.7.1 // indirect
-	github.com/zclconf/go-cty v1.15.1 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	github.com/spf13/cast v1.8.0 // indirect
+	github.com/zclconf/go-cty v1.16.2 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 )
