@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	FencedCodeBlockLanguageConsole   = "console"
 	FencedCodeBlockLanguageHcl       = "hcl"
 	FencedCodeBlockLanguageMissing   = "MISSING"
 	FencedCodeBlockLanguageTerraform = "terraform"
