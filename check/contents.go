@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/YakDriver/tfproviderdocs/check/contents"
 )
@@ -17,6 +18,7 @@ type ContentsOptions struct {
 	Enable                bool
 	ProviderName          string
 	RequireSchemaOrdering bool
+	IgnoreContentsCheck   []string
 }
 
 func NewContentsCheck(opts *ContentsOptions) *ContentsCheck {
@@ -56,6 +58,10 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string) error {
 
 	if err := doc.Parse(); err != nil {
 		return fmt.Errorf("error parsing file: %w", err)
+	}
+
+	if len(check.Options.IgnoreContentsCheck) > 0 && slices.Contains(check.Options.IgnoreContentsCheck, doc.ResourceName) {
+		return nil
 	}
 
 	if err := doc.Check(checkOpts); err != nil {

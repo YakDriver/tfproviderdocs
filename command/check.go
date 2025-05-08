@@ -25,6 +25,10 @@ type CheckCommandConfig struct {
 	AllowedResourceSubcategoriesFile string
 	EnableContentsCheck              bool
 	IgnoreCdktfMissingFiles          bool
+	IgnoreContentsCheckDataSources   string
+	IgnoreContentsCheckEphemerals    string
+	IgnoreContentsCheckFunctions     string
+	IgnoreContentsCheckResources     string
 	IgnoreFileMismatchDataSources    string
 	IgnoreFileMismatchEphemerals     string
 	IgnoreFileMismatchFunctions      string
@@ -58,6 +62,10 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-allowed-resource-subcategories-file", "Path to newline separated file of allowed data source and resource frontmatter subcategories.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-enable-contents-check", "(Experimental) Enable contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-cdktf-missing-files", "Ignore checks for missing CDK for Terraform documentation files when iteratively introducing them in large providers.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-data-sources", "Comma separated list of data sources to ignore contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-ephemerals", "Comma separated list of ephemerals to ignore contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-functions", "Comma separated list of functions to ignore contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-resources", "Comma separated list of resources to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-ephemerals", "Comma separated list of ephemerals to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-functions", "Comma separated list of functions to ignore mismatched/extra files.")
@@ -101,8 +109,12 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.StringVar(&config.AllowedResourceSubcategoriesFile, "allowed-resource-subcategories-file", "", "")
 	flags.BoolVar(&config.EnableContentsCheck, "enable-contents-check", false, "")
 	flags.BoolVar(&config.IgnoreCdktfMissingFiles, "ignore-cdktf-missing-files", false, "")
+	flags.StringVar(&config.IgnoreContentsCheckDataSources, "ignore-contents-check-data-sources", "", "")
+	flags.StringVar(&config.IgnoreContentsCheckEphemerals, "ignore-contents-check-ephemerals", "", "")
+	flags.StringVar(&config.IgnoreContentsCheckFunctions, "ignore-contents-check-functions", "", "")
+	flags.StringVar(&config.IgnoreContentsCheckResources, "ignore-contents-check-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
-	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-ephemerals", "", "")
+	flags.StringVar(&config.IgnoreFileMismatchEphemerals, "ignore-file-mismatch-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchFunctions, "ignore-file-mismatch-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchResources, "ignore-file-mismatch-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingDataSources, "ignore-file-missing-data-sources", "", "")
@@ -195,6 +207,26 @@ func (c *CheckCommand) Run(args []string) int {
 		}
 	}
 
+	var ignoreContentsCheckDataSources []string
+	if v := config.IgnoreContentsCheckDataSources; v != "" {
+		ignoreContentsCheckDataSources = strings.Split(v, ",")
+	}
+
+	var ignoreContentsCheckEphemerals []string
+	if v := config.IgnoreContentsCheckEphemerals; v != "" {
+		ignoreContentsCheckEphemerals = strings.Split(v, ",")
+	}
+
+	// var ignoreContentsCheckFunctions []string
+	// if v := config.IgnoreContentsCheckFunctions; v != "" {
+	// 	ignoreContentsCheckFunctions = strings.Split(v, ",")
+	// }
+
+	var ignoreContentsCheckResources []string
+	if v := config.IgnoreContentsCheckResources; v != "" {
+		ignoreContentsCheckResources = strings.Split(v, ",")
+	}
+
 	var ignoreFileMismatchDataSources []string
 	if v := config.IgnoreFileMismatchDataSources; v != "" {
 		ignoreFileMismatchDataSources = strings.Split(v, ",")
@@ -267,6 +299,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckDataSources,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -278,6 +312,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckDataSources,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -298,6 +334,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckEphemerals,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -310,6 +348,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckEphemerals,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -353,6 +393,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckResources,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -365,6 +407,8 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
+				IgnoreContentsCheck:   ignoreContentsCheckResources,
+				ProviderName:          config.ProviderName,
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
