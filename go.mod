@@ -8,7 +8,7 @@ require (
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/terraform-json v0.24.0
+	github.com/hashicorp/terraform-json v0.25.0
 	github.com/mattn/go-colorable v0.1.14
 	github.com/mitchellh/cli v1.1.5
 	github.com/yuin/goldmark v1.7.11
