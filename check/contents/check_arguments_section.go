@@ -68,6 +68,7 @@ func (d *Document) checkArgumentsSection() error {
 
 	// TODO
 	if checkOpts.EnhancedRegionChecks {
+
 		// for _, list := range section.SchemaAttributeLists {
 		// 	if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
 		// 		return item.Name == "region"

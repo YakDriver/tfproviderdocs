@@ -6,10 +6,11 @@ import (
 
 func TestFrontMatterCheck(t *testing.T) {
 	testCases := []struct {
-		Name        string
-		Source      string
-		Options     *FrontMatterOptions
-		ExpectError bool
+		Name              string
+		Source            string
+		Options           *FrontMatterOptions
+		ExpectError       bool
+		ExpectSubcategory string
 	}{
 		{
 			Name:   "empty source",
@@ -24,6 +25,7 @@ layout: "example"
 page_title: Example Page Title
 subcategory: Example Subcategory
 `,
+			ExpectSubcategory: "Example Subcategory",
 		},
 		{
 			Name: "valid YAML section and Markdown with default options",
@@ -38,6 +40,7 @@ subcategory: Example Subcategory
 
 # Markdown here we go!
 `,
+			ExpectSubcategory: "Example Subcategory",
 		},
 		{
 			Name: "invalid YAML",
@@ -57,6 +60,7 @@ layout: "example"
 page_title: Example Page Title
 subcategory: Example Subcategory
 `,
+			ExpectSubcategory: "Example Subcategory",
 			Options: &FrontMatterOptions{
 				AllowedSubcategories: []string{"Example Subcategory"},
 			},
@@ -201,14 +205,18 @@ page_title: Example Page Title
 
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			got := NewFrontMatterCheck(testCase.Options).Run([]byte(testCase.Source))
+			subcategory, err := NewFrontMatterCheck(testCase.Options).Run([]byte(testCase.Source))
 
-			if got == nil && testCase.ExpectError {
+			if err == nil && testCase.ExpectError {
 				t.Errorf("expected error, got no error")
 			}
 
-			if got != nil && !testCase.ExpectError {
-				t.Errorf("expected no error, got error: %s", got)
+			if err != nil && !testCase.ExpectError {
+				t.Errorf("expected no error, got error: %s", err)
+			}
+
+			if got, want := subcategory, testCase.ExpectSubcategory; want != "" && *got != want {
+				t.Errorf("expected subcategory %q, got: %q", want, *got)
 			}
 		})
 	}
