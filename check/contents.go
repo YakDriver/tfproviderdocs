@@ -20,6 +20,7 @@ type ContentsOptions struct {
 	ProviderName                           string
 	RequireSchemaOrdering                  bool
 	IgnoreContentsCheck                    []string
+	IgnoreEnhancedRegionCheck              []string
 	IgnoreEnhancedRegionCheckSubcategories []string
 }
 
@@ -65,6 +66,10 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 
 	if len(check.Options.IgnoreContentsCheck) > 0 && slices.Contains(check.Options.IgnoreContentsCheck, doc.ResourceName) {
 		return nil
+	}
+
+	if len(check.Options.IgnoreEnhancedRegionCheck) > 0 && slices.Contains(check.Options.IgnoreEnhancedRegionCheck, doc.ResourceName) {
+		checkOpts.ArgumentsSection.EnhancedRegionChecks = false
 	}
 
 	if len(check.Options.IgnoreEnhancedRegionCheckSubcategories) > 0 && subcategory != nil && slices.Contains(check.Options.IgnoreEnhancedRegionCheckSubcategories, *subcategory) {

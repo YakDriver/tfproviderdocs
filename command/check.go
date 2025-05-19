@@ -30,6 +30,9 @@ type CheckCommandConfig struct {
 	IgnoreContentsCheckEphemerals              string
 	IgnoreContentsCheckFunctions               string
 	IgnoreContentsCheckResources               string
+	IgnoreEnhancedRegionCheckDataSources       string
+	IgnoreEnhancedRegionCheckEphemerals        string
+	IgnoreEnhancedRegionCheckResources         string
 	IgnoreEnhancedRegionCheckSubcategories     string
 	IgnoreEnhancedRegionCheckSubcategoriesFile string
 	IgnoreFileMismatchDataSources              string
@@ -70,6 +73,9 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-ephemerals", "Comma separated list of ephemerals to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-functions", "Comma separated list of functions to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-resources", "Comma separated list of resources to ignore contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-data-sources", "Comma separated list of data sources to ignore enhanced Region functionality checks.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-ephemerals", "Comma separated list of ephemerals to ignore enhanced Region functionality checks.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-resources", "Comma separated list of resources to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories", "Comma separated list of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories-file", "Path to newline separated file of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
@@ -120,6 +126,9 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.StringVar(&config.IgnoreContentsCheckEphemerals, "ignore-contents-check-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckFunctions, "ignore-contents-check-functions", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckResources, "ignore-contents-check-resources", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckDataSources, "ignore-enhanced-region-check-data-sources", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckEphemerals, "ignore-enhanced-region-check-ephemerals", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckResources, "ignore-enhanced-region-check-resources", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategories, "ignore-enhanced-region-check-subcategories", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategoriesFile, "ignore-enhanced-region-check-subcategories-file", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
@@ -236,6 +245,21 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreContentsCheckResources = strings.Split(v, ",")
 	}
 
+	var ignoreEnhancedRegionCheckDataSources []string
+	if v := config.IgnoreEnhancedRegionCheckDataSources; v != "" {
+		ignoreEnhancedRegionCheckDataSources = strings.Split(v, ",")
+	}
+
+	var ignoreEnhancedRegionCheckEphemerals []string
+	if v := config.IgnoreEnhancedRegionCheckEphemerals; v != "" {
+		ignoreEnhancedRegionCheckEphemerals = strings.Split(v, ",")
+	}
+
+	var ignoreEnhancedRegionCheckResources []string
+	if v := config.IgnoreEnhancedRegionCheckResources; v != "" {
+		ignoreEnhancedRegionCheckResources = strings.Split(v, ",")
+	}
+
 	var ignoreEnhancedRegionCheckSubcategories []string
 	if v := config.IgnoreEnhancedRegionCheckSubcategories; v != "" {
 		ignoreEnhancedRegionCheckSubcategories = strings.Split(v, ",")
@@ -325,6 +349,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckDataSources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
@@ -340,6 +365,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckDataSources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
@@ -364,6 +390,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckEphemerals,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
@@ -380,6 +407,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckEphemerals,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
@@ -427,6 +455,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
@@ -443,6 +472,7 @@ Check that the current working directory or provided path is prefixed with terra
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
 			},
