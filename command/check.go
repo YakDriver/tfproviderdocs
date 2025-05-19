@@ -31,8 +31,11 @@ type CheckCommandConfig struct {
 	IgnoreContentsCheckFunctions               string
 	IgnoreContentsCheckResources               string
 	IgnoreEnhancedRegionCheckDataSources       string
+	IgnoreEnhancedRegionCheckDataSourcesFile   string
 	IgnoreEnhancedRegionCheckEphemerals        string
+	IgnoreEnhancedRegionCheckEphemeralsFile    string
 	IgnoreEnhancedRegionCheckResources         string
+	IgnoreEnhancedRegionCheckResourcesFile     string
 	IgnoreEnhancedRegionCheckSubcategories     string
 	IgnoreEnhancedRegionCheckSubcategoriesFile string
 	IgnoreFileMismatchDataSources              string
@@ -74,8 +77,11 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-functions", "Comma separated list of functions to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-resources", "Comma separated list of resources to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-data-sources", "Comma separated list of data sources to ignore enhanced Region functionality checks.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-data-sources-file", "Path to newline separated file of data sources to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-ephemerals", "Comma separated list of ephemerals to ignore enhanced Region functionality checks.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-ephemerals-file", "Path to newline separated file of ephemerals to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-resources", "Comma separated list of resources to ignore enhanced Region functionality checks.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-resources-file", "Path to newline separated file of resources to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories", "Comma separated list of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories-file", "Path to newline separated file of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
@@ -127,8 +133,11 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.StringVar(&config.IgnoreContentsCheckFunctions, "ignore-contents-check-functions", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckResources, "ignore-contents-check-resources", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckDataSources, "ignore-enhanced-region-check-data-sources", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckDataSourcesFile, "ignore-enhanced-region-check-data-sources-file", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckEphemerals, "ignore-enhanced-region-check-ephemerals", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckEphemeralsFile, "ignore-enhanced-region-check-ephemerals-file", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckResources, "ignore-enhanced-region-check-resources", "", "")
+	flags.StringVar(&config.IgnoreEnhancedRegionCheckResourcesFile, "ignore-enhanced-region-check-resources-file", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategories, "ignore-enhanced-region-check-subcategories", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategoriesFile, "ignore-enhanced-region-check-subcategories-file", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
@@ -250,14 +259,44 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreEnhancedRegionCheckDataSources = strings.Split(v, ",")
 	}
 
+	if v := config.IgnoreEnhancedRegionCheckDataSourcesFile; v != "" {
+		var err error
+		ignoreEnhancedRegionCheckDataSources, err = allowedSubcategoriesFile(v)
+
+		if err != nil {
+			c.Ui.Error(fmt.Sprintf("Error getting ignore enhanced Region check data sources: %s", err))
+			return 1
+		}
+	}
+
 	var ignoreEnhancedRegionCheckEphemerals []string
 	if v := config.IgnoreEnhancedRegionCheckEphemerals; v != "" {
 		ignoreEnhancedRegionCheckEphemerals = strings.Split(v, ",")
 	}
 
+	if v := config.IgnoreEnhancedRegionCheckEphemeralsFile; v != "" {
+		var err error
+		ignoreEnhancedRegionCheckEphemerals, err = allowedSubcategoriesFile(v)
+
+		if err != nil {
+			c.Ui.Error(fmt.Sprintf("Error getting ignore enhanced Region check ephemerals: %s", err))
+			return 1
+		}
+	}
+
 	var ignoreEnhancedRegionCheckResources []string
 	if v := config.IgnoreEnhancedRegionCheckResources; v != "" {
 		ignoreEnhancedRegionCheckResources = strings.Split(v, ",")
+	}
+
+	if v := config.IgnoreEnhancedRegionCheckResourcesFile; v != "" {
+		var err error
+		ignoreEnhancedRegionCheckResources, err = allowedSubcategoriesFile(v)
+
+		if err != nil {
+			c.Ui.Error(fmt.Sprintf("Error getting ignore enhanced Region check resources: %s", err))
+			return 1
+		}
 	}
 
 	var ignoreEnhancedRegionCheckSubcategories []string
