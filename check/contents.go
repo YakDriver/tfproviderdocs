@@ -16,6 +16,7 @@ type ContentsOptions struct {
 	*FileOptions
 
 	Enable                bool
+	EnhancedRegionChecks  bool
 	ProviderName          string
 	RequireSchemaOrdering bool
 	IgnoreContentsCheck   []string
@@ -44,6 +45,7 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string) error {
 
 	checkOpts := &contents.CheckOptions{
 		ArgumentsSection: &contents.CheckArgumentsSectionOptions{
+			EnhancedRegionChecks:  check.Options.EnhancedRegionChecks,
 			RequireSchemaOrdering: check.Options.RequireSchemaOrdering,
 		},
 		AttributesSection: &contents.CheckAttributesSectionOptions{

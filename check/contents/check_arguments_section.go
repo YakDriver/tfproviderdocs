@@ -6,6 +6,7 @@ import (
 )
 
 type CheckArgumentsSectionOptions struct {
+	EnhancedRegionChecks  bool
 	RequireSchemaOrdering bool
 }
 
@@ -63,6 +64,17 @@ func (d *Document) checkArgumentsSection() error {
 		if !found {
 			return fmt.Errorf("argument section byline (%s) should be: %q, %q, %q, or %q", paragraphText, expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
 		}
+	}
+
+	// TODO
+	if checkOpts.EnhancedRegionChecks {
+		// for _, list := range section.SchemaAttributeLists {
+		// 	if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
+		// 		return item.Name == "region"
+		// 	}) {
+		// 		return fmt.Errorf("arguments section does not contain a region argument")
+		// 	}
+		// }
 	}
 
 	if checkOpts.RequireSchemaOrdering {

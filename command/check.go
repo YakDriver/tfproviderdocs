@@ -24,6 +24,7 @@ type CheckCommandConfig struct {
 	AllowedResourceSubcategories     string
 	AllowedResourceSubcategoriesFile string
 	EnableContentsCheck              bool
+	EnableEnhancedRegionCheck        bool
 	IgnoreCdktfMissingFiles          bool
 	IgnoreContentsCheckDataSources   string
 	IgnoreContentsCheckEphemerals    string
@@ -61,6 +62,7 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-allowed-resource-subcategories", "Comma separated list of allowed data source and resource frontmatter subcategories.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-allowed-resource-subcategories-file", "Path to newline separated file of allowed data source and resource frontmatter subcategories.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-enable-contents-check", "(Experimental) Enable contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-enable-enhanced-region-check", "Enable enhanced Region functionality checks (requires -enable-contents-check).")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-cdktf-missing-files", "Ignore checks for missing CDK for Terraform documentation files when iteratively introducing them in large providers.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-data-sources", "Comma separated list of data sources to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-ephemerals", "Comma separated list of ephemerals to ignore contents checking.")
@@ -108,6 +110,7 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.StringVar(&config.AllowedResourceSubcategories, "allowed-resource-subcategories", "", "")
 	flags.StringVar(&config.AllowedResourceSubcategoriesFile, "allowed-resource-subcategories-file", "", "")
 	flags.BoolVar(&config.EnableContentsCheck, "enable-contents-check", false, "")
+	flags.BoolVar(&config.EnableEnhancedRegionCheck, "enable-enhanced-region-check", false, "")
 	flags.BoolVar(&config.IgnoreCdktfMissingFiles, "ignore-cdktf-missing-files", false, "")
 	flags.StringVar(&config.IgnoreContentsCheckDataSources, "ignore-contents-check-data-sources", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckEphemerals, "ignore-contents-check-ephemerals", "", "")
@@ -298,6 +301,7 @@ Check that the current working directory or provided path is prefixed with terra
 		RegistryDataSourceFile: &check.RegistryDataSourceFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckDataSources,
 				ProviderName:          config.ProviderName,
@@ -311,6 +315,7 @@ Check that the current working directory or provided path is prefixed with terra
 		LegacyDataSourceFile: &check.LegacyDataSourceFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckDataSources,
 				ProviderName:          config.ProviderName,
@@ -333,6 +338,7 @@ Check that the current working directory or provided path is prefixed with terra
 		RegistryEphemeralFile: &check.RegistryEphemeralFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckEphemerals,
 				ProviderName:          config.ProviderName,
@@ -347,6 +353,7 @@ Check that the current working directory or provided path is prefixed with terra
 		LegacyEphemeralFile: &check.LegacyEphemeralFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckEphemerals,
 				ProviderName:          config.ProviderName,
@@ -392,6 +399,7 @@ Check that the current working directory or provided path is prefixed with terra
 		RegistryResourceFile: &check.RegistryResourceFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckResources,
 				ProviderName:          config.ProviderName,
@@ -406,6 +414,7 @@ Check that the current working directory or provided path is prefixed with terra
 		LegacyResourceFile: &check.LegacyResourceFileOptions{
 			Contents: &check.ContentsOptions{
 				Enable:                config.EnableContentsCheck,
+				EnhancedRegionChecks:  config.EnableEnhancedRegionCheck,
 				RequireSchemaOrdering: config.RequireSchemaOrdering,
 				IgnoreContentsCheck:   ignoreContentsCheckResources,
 				ProviderName:          config.ProviderName,
