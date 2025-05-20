@@ -49,7 +49,7 @@ func (d *Document) checkArgumentsSection() error {
 	switch len(paragraphs) {
 	case 0:
 		return fmt.Errorf("argument section byline should be: %q, %q, %q, or %q", expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
-	case 1:
+	default:
 		paragraphText := string(paragraphs[0].Text(d.source))
 
 		found := false
@@ -67,16 +67,15 @@ func (d *Document) checkArgumentsSection() error {
 	}
 
 	// TODO
-	if checkOpts.EnhancedRegionChecks {
-
-		// for _, list := range section.SchemaAttributeLists {
-		// 	if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
-		// 		return item.Name == "region"
-		// 	}) {
-		// 		return fmt.Errorf("arguments section does not contain a region argument")
-		// 	}
-		// }
-	}
+	// if checkOpts.EnhancedRegionChecks {
+	// 	for _, list := range section.SchemaAttributeLists {
+	// 		if slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
+	// 			return item.Name == "region"
+	// 		}) {
+	// 			return fmt.Errorf("arguments section contains a region argument")
+	// 		}
+	// 	}
+	// }
 
 	if checkOpts.RequireSchemaOrdering {
 		for _, list := range section.SchemaAttributeLists {
