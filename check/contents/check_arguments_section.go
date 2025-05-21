@@ -104,16 +104,15 @@ func (d *Document) checkArgumentsSection() error {
 		}
 	}
 
-	// TODO
-	// if checkOpts.EnhancedRegionChecks {
-	// 	for _, list := range section.SchemaAttributeLists {
-	// 		if slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
-	// 			return item.Name == "region"
-	// 		}) {
-	// 			return fmt.Errorf("arguments section contains a region argument")
-	// 		}
-	// 	}
-	// }
+	if checkOpts.EnhancedRegionChecks && checkOpts.RegionAware {
+		for _, list := range section.SchemaAttributeLists {
+			if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
+				return item.Name == "region" && item.Optional
+			}) {
+				return fmt.Errorf("arguments section does not contain an Optional region argument")
+			}
+		}
+	}
 
 	if checkOpts.RequireSchemaOrdering {
 		for _, list := range section.SchemaAttributeLists {
