@@ -15,10 +15,13 @@ type ContentsCheck struct {
 type ContentsOptions struct {
 	*FileOptions
 
-	Enable                bool
-	ProviderName          string
-	RequireSchemaOrdering bool
-	IgnoreContentsCheck   []string
+	Enable                                 bool
+	EnhancedRegionChecks                   bool
+	ProviderName                           string
+	RequireSchemaOrdering                  bool
+	IgnoreContentsCheck                    []string
+	IgnoreEnhancedRegionCheck              []string
+	IgnoreEnhancedRegionCheckSubcategories []string
 }
 
 func NewContentsCheck(opts *ContentsOptions) *ContentsCheck {
@@ -37,13 +40,15 @@ func NewContentsCheck(opts *ContentsOptions) *ContentsCheck {
 	return check
 }
 
-func (check *ContentsCheck) Run(path string, exampleLanguage string) error {
+func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory *string) error {
 	if !check.Options.Enable {
 		return nil
 	}
 
 	checkOpts := &contents.CheckOptions{
 		ArgumentsSection: &contents.CheckArgumentsSectionOptions{
+			EnhancedRegionChecks:  check.Options.EnhancedRegionChecks,
+			RegionAware:           true,
 			RequireSchemaOrdering: check.Options.RequireSchemaOrdering,
 		},
 		AttributesSection: &contents.CheckAttributesSectionOptions{
@@ -62,6 +67,14 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string) error {
 
 	if len(check.Options.IgnoreContentsCheck) > 0 && slices.Contains(check.Options.IgnoreContentsCheck, doc.ResourceName) {
 		return nil
+	}
+
+	if len(check.Options.IgnoreEnhancedRegionCheck) > 0 && slices.Contains(check.Options.IgnoreEnhancedRegionCheck, doc.ResourceName) {
+		checkOpts.ArgumentsSection.RegionAware = false
+	}
+
+	if len(check.Options.IgnoreEnhancedRegionCheckSubcategories) > 0 && subcategory != nil && slices.Contains(check.Options.IgnoreEnhancedRegionCheckSubcategories, *subcategory) {
+		checkOpts.ArgumentsSection.RegionAware = false
 	}
 
 	if err := doc.Check(checkOpts); err != nil {

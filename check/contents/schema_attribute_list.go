@@ -47,7 +47,9 @@ func schemaAttributeListWalker(list *ast.List, source []byte) (*SchemaAttributeL
 				return ast.WalkStop, err
 			}
 
-			result.Items = append(result.Items, item)
+			if item.Name != "" {
+				result.Items = append(result.Items, item)
+			}
 
 			return ast.WalkContinue, nil
 		}
@@ -77,7 +79,7 @@ func schemaAttributeListItemWalker(listItem *ast.ListItem, source []byte) (*Sche
 				return ast.WalkContinue, nil
 			}
 
-			result.Name = itemParts[0]
+			result.Name = strings.Trim(itemParts[0], "`")
 			fullDescription := itemParts[1]
 
 			if !strings.HasPrefix(fullDescription, "(") {

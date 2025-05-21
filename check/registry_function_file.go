@@ -62,7 +62,9 @@ func (check *RegistryFunctionFileCheck) Run(path string) error {
 		return fmt.Errorf("%s: error reading file: %w", path, err)
 	}
 
-	if err := NewFrontMatterCheck(check.Options.FrontMatter).Run(content); err != nil {
+	_, err = NewFrontMatterCheck(check.Options.FrontMatter).Run(content)
+
+	if err != nil {
 		return fmt.Errorf("%s: error checking file frontmatter: %w", path, err)
 	}
 

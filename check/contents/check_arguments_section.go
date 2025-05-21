@@ -2,10 +2,13 @@ package contents
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 )
 
 type CheckArgumentsSectionOptions struct {
+	EnhancedRegionChecks  bool
+	RegionAware           bool // The resource is Region-aware and has a top-level region argument.
 	RequireSchemaOrdering bool
 }
 
@@ -48,7 +51,7 @@ func (d *Document) checkArgumentsSection() error {
 	switch len(paragraphs) {
 	case 0:
 		return fmt.Errorf("argument section byline should be: %q, %q, %q, or %q", expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
-	case 1:
+	default:
 		paragraphText := string(paragraphs[0].Text(d.source))
 
 		found := false
@@ -62,6 +65,52 @@ func (d *Document) checkArgumentsSection() error {
 
 		if !found {
 			return fmt.Errorf("argument section byline (%s) should be: %q, %q, %q, or %q", paragraphText, expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
+		}
+
+		if paragraphText == "The following arguments are required:" {
+			// Check for Optionals.
+			if n := len(section.SchemaAttributeLists); n > 0 {
+				if slices.ContainsFunc(section.SchemaAttributeLists[0].Items, func(item *SchemaAttributeListItem) bool {
+					return item.Optional
+				}) {
+					return fmt.Errorf("required arguments section contains an Optional argument")
+				}
+			}
+
+			if n := len(paragraphs); n > 1 {
+				// A following paragraph must be "The following arguments are optional:"
+				want := "The following arguments are optional:"
+				idx := -1
+				for i := 1; i < n; i++ {
+					if string(paragraphs[i].Text(d.source)) == want {
+						idx = i
+						break
+					}
+				}
+
+				if idx < 0 {
+					return fmt.Errorf("argument section byline (%s) should be: %q", paragraphText, want)
+				}
+
+				// Check for Required.
+				if n := len(section.SchemaAttributeLists); n > idx {
+					if slices.ContainsFunc(section.SchemaAttributeLists[idx].Items, func(item *SchemaAttributeListItem) bool {
+						return item.Required
+					}) {
+						return fmt.Errorf("optional arguments section contains a Required argument")
+					}
+				}
+			}
+		}
+	}
+
+	if checkOpts.EnhancedRegionChecks && checkOpts.RegionAware {
+		for _, list := range section.SchemaAttributeLists {
+			if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
+				return item.Name == "region" && item.Optional
+			}) {
+				return fmt.Errorf("arguments section does not contain an Optional region argument")
+			}
 		}
 	}
 

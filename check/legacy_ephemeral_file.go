@@ -86,13 +86,15 @@ func (check *LegacyEphemeralFileCheck) Run(path string, exampleLanguage string) 
 		return fmt.Errorf("%s: error reading file: %w", path, err)
 	}
 
-	if err := NewFrontMatterCheck(check.Options.FrontMatter).Run(content); err != nil {
+	subcategory, err := NewFrontMatterCheck(check.Options.FrontMatter).Run(content)
+
+	if err != nil {
 		return fmt.Errorf("%s: error checking file frontmatter: %w", path, err)
 	}
 
 	// We don't want to check the content for CDKTF files since they are converted
 	if !IsValidCdktfDirectory(filepath.Dir(fullpath)) {
-		if err := NewContentsCheck(check.Options.Contents).Run(fullpath, exampleLanguage); err != nil {
+		if err := NewContentsCheck(check.Options.Contents).Run(fullpath, exampleLanguage, subcategory); err != nil {
 			return fmt.Errorf("%s: error checking file contents: %w", path, err)
 		}
 	}
