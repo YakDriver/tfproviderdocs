@@ -48,6 +48,7 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 	checkOpts := &contents.CheckOptions{
 		ArgumentsSection: &contents.CheckArgumentsSectionOptions{
 			EnhancedRegionChecks:  check.Options.EnhancedRegionChecks,
+			RegionAware:           true,
 			RequireSchemaOrdering: check.Options.RequireSchemaOrdering,
 		},
 		AttributesSection: &contents.CheckAttributesSectionOptions{
@@ -69,11 +70,11 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 	}
 
 	if len(check.Options.IgnoreEnhancedRegionCheck) > 0 && slices.Contains(check.Options.IgnoreEnhancedRegionCheck, doc.ResourceName) {
-		checkOpts.ArgumentsSection.EnhancedRegionChecks = false
+		checkOpts.ArgumentsSection.RegionAware = false
 	}
 
 	if len(check.Options.IgnoreEnhancedRegionCheckSubcategories) > 0 && subcategory != nil && slices.Contains(check.Options.IgnoreEnhancedRegionCheckSubcategories, *subcategory) {
-		checkOpts.ArgumentsSection.EnhancedRegionChecks = false
+		checkOpts.ArgumentsSection.RegionAware = false
 	}
 
 	if err := doc.Check(checkOpts); err != nil {
