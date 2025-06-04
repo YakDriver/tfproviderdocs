@@ -105,12 +105,18 @@ func (d *Document) checkArgumentsSection() error {
 	}
 
 	if checkOpts.EnhancedRegionChecks && checkOpts.RegionAware {
+		found := false
 		for _, list := range section.SchemaAttributeLists {
-			if !slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
+			if slices.ContainsFunc(list.Items, func(item *SchemaAttributeListItem) bool {
 				return item.Name == "region" && item.Optional
 			}) {
-				return fmt.Errorf("arguments section does not contain an Optional region argument")
+				found = true
+				break
 			}
+		}
+
+		if !found {
+			return fmt.Errorf("arguments section does not contain an Optional region argument")
 		}
 	}
 
