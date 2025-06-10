@@ -40,8 +40,10 @@ func (d *Document) checkAttributesSection() error {
 	paragraphs := section.Paragraphs
 	expectedBylineTexts := []string{
 		"This resource exports the following attributes in addition to the arguments above:",
+		"This ephemeral resource exports the following attributes in addition to the arguments above:",
 		"This data source exports the following attributes in addition to the arguments above:",
 		"This resource exports no additional attributes.",
+		"This ephemeral resource exports no additional attributes.",
 		"This data source exports no additional attributes.",
 	}
 
