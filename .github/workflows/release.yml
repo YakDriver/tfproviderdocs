@@ -83,4 +83,3 @@ jobs:
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
         with:
           args: release --release-notes RELEASE-NOTES.md --clean
-
