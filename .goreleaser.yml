@@ -9,29 +9,6 @@ before:
   hooks:
     - go mod download
 
-brews:
-  -
-    name: tfproviderdocs
-    dependencies:
-      - go
-    description: Terraform Provider Documentation Tool
-    directory: Formula
-    repository:
-      owner: YakDriver
-      name: homebrew-tap
-      branch: "update-tfproviderdocs-{{ .Env.RELEASE_TAG }}"
-      token: "{{ .Env.PR_TOKEN }}"
-      pull_request:
-        enabled: true
-    homepage: https://github.com/YakDriver/tfproviderdocs
-    install: |
-      bin.install "tfproviderdocs"
-    test: |
-      system "#{bin}/tfproviderdocs -v"
-    commit_author:
-      name: yakdriverbot
-      email: f1formula.juan@gmail.com
-
 builds:
   - env:
       - CGO_ENABLED=0
