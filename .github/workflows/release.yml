@@ -66,7 +66,7 @@ jobs:
           sed -n -e "1{/# v/d;}" -e "2{/^$/d;}" -e "/# $(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags)/q;p" CHANGELOG.md > RELEASE-NOTES.md
 
       - name: Check configuration
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           args: check
 
@@ -75,7 +75,7 @@ jobs:
         run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Release
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.BEEFY_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
