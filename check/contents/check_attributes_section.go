@@ -5,16 +5,16 @@ import (
 	"sort"
 )
 
-type sectionRequirement int
+type SectionRequirement int
 
 const (
-	Required sectionRequirement = iota
+	Required SectionRequirement = iota
 	Forbidden
 )
 
 type CheckAttributesSectionOptions struct {
 	RequireSchemaOrdering bool
-	RequireSection        sectionRequirement
+	RequireSection        SectionRequirement
 }
 
 func (d *Document) checkAttributesSection() error {
