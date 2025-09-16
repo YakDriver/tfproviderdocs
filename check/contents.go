@@ -19,6 +19,7 @@ type ContentsOptions struct {
 	EnhancedRegionChecks                   bool
 	ProviderName                           string
 	RequireAttributesSection               contents.SectionRequirement
+	RequireTimeoutsSection                 contents.SectionRequirement
 	RequireSchemaOrdering                  bool
 	IgnoreContentsCheck                    []string
 	IgnoreEnhancedRegionCheck              []string
@@ -58,6 +59,9 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 		},
 		ExamplesSection: &contents.CheckExamplesSectionOptions{
 			ExpectedCodeBlockLanguage: exampleLanguage,
+		},
+		TimeoutsSection: &contents.CheckTimeoutsSectionOptions{
+			RequireSection: check.Options.RequireTimeoutsSection,
 		},
 	}
 
