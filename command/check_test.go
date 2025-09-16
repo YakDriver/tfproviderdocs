@@ -1,11 +1,41 @@
 package command
 
 import (
+	"flag"
 	"reflect"
 	"testing"
 
 	tfjson "github.com/hashicorp/terraform-json"
 )
+
+func TestConfigureCheckCommandFlagsIgnoreFileMissingBindings(t *testing.T) {
+	var config CheckCommandConfig
+	flags := flag.NewFlagSet("check", flag.ContinueOnError)
+
+	configureCheckCommandFlags(flags, &config)
+
+	const ephemeralValue = "example-ephemeral"
+	if err := flags.Set("ignore-file-missing-ephemerals", ephemeralValue); err != nil {
+		t.Fatalf("unexpected error setting ignore-file-missing-ephemerals flag: %s", err)
+	}
+
+	if got := config.IgnoreFileMissingEphemerals; got != ephemeralValue {
+		t.Fatalf("expected IgnoreFileMissingEphemerals to be %q, got %q", ephemeralValue, got)
+	}
+
+	if got := config.IgnoreFileMissingFunctions; got != "" {
+		t.Fatalf("expected IgnoreFileMissingFunctions to be empty before setting flag, got %q", got)
+	}
+
+	const functionsValue = "example-function"
+	if err := flags.Set("ignore-file-missing-functions", functionsValue); err != nil {
+		t.Fatalf("unexpected error setting ignore-file-missing-functions flag: %s", err)
+	}
+
+	if got := config.IgnoreFileMissingFunctions; got != functionsValue {
+		t.Fatalf("expected IgnoreFileMissingFunctions to be %q, got %q", functionsValue, got)
+	}
+}
 
 func TestAllowedSubcategoriesFile(t *testing.T) {
 	testCases := []struct {
