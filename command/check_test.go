@@ -463,6 +463,116 @@ func TestProviderSchemasFunctions(t *testing.T) {
 	}
 }
 
+func TestProviderSchemasListResources(t *testing.T) {
+	testCases := []struct {
+		Name            string
+		ProviderName    string
+		ProviderSource  string
+		ProvidersSchema *tfjson.ProviderSchemas
+		Expect          []string
+	}{
+		{
+			Name:            "no providers schemas",
+			ProviderName:    "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{},
+			Expect:          nil,
+		},
+		{
+			Name:         "provider name not found",
+			ProviderName: "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"incorrect": {},
+				},
+			},
+			Expect: nil,
+		},
+		{
+			Name:           "provider source not found",
+			ProviderSource: "registry.terraform.io/test/test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"test": {},
+				},
+			},
+			Expect: nil,
+		},
+		{
+			Name:         "provider name found",
+			ProviderName: "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"incorrect": {},
+					"test": {
+						DataSourceSchemas: map[string]*tfjson.Schema{
+							"test_data_source1": {},
+							"test_data_source2": {},
+							"test_data_source3": {},
+						},
+						ListResourceSchemas: map[string]*tfjson.Schema{
+							"test_list_resource1": {},
+							"test_list_resource2": {},
+							"test_list_resource3": {},
+						},
+						ResourceSchemas: map[string]*tfjson.Schema{
+							"test_resource1": {},
+							"test_resource2": {},
+							"test_resource3": {},
+						},
+					},
+				},
+			},
+			Expect: []string{
+				"test_list_resource1",
+				"test_list_resource2",
+				"test_list_resource3",
+			},
+		},
+		{
+			Name:           "provider source found",
+			ProviderSource: "registry.terraform.io/test/test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"registry.terraform.io/test/incorrect": {},
+					"registry.terraform.io/test/test": {
+						DataSourceSchemas: map[string]*tfjson.Schema{
+							"test_data_source1": {},
+							"test_data_source2": {},
+							"test_data_source3": {},
+						},
+						ListResourceSchemas: map[string]*tfjson.Schema{
+							"test_list_resource1": {},
+							"test_list_resource2": {},
+							"test_list_resource3": {},
+						},
+						ResourceSchemas: map[string]*tfjson.Schema{
+							"test_resource1": {},
+							"test_resource2": {},
+							"test_resource3": {},
+						},
+					},
+				},
+			},
+			Expect: []string{
+				"test_list_resource1",
+				"test_list_resource2",
+				"test_list_resource3",
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			want := testCase.Expect
+			got := providerSchemasListResources(testCase.ProvidersSchema, testCase.ProviderName, testCase.ProviderSource)
+
+			if !reflect.DeepEqual(want, got) {
+				t.Errorf("mismatch:\n\nwant:\n\n%v\n\ngot:\n\n%v\n\n", want, got)
+			}
+		})
+	}
+}
+
 func TestProviderSchemasResources(t *testing.T) {
 	testCases := []struct {
 		Name            string
