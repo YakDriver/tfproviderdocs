@@ -42,10 +42,12 @@ func (d *Document) checkArgumentsSection() error {
 	expectedBylineTexts := []string{
 		"This resource supports the following arguments:",
 		"This ephemeral resource supports the following arguments:",
+		"This list resource supports the following arguments:",
 		"The following arguments are required:",
 		"The following arguments are optional:",
 		"This resource does not support any arguments.",
 		"This ephemeral resource does not support any arguments.",
+		"This list resource does not support any arguments.",
 		"This data source does not support any arguments.",
 		"This data source supports the following arguments:",
 	}
