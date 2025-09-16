@@ -41,10 +41,12 @@ type CheckCommandConfig struct {
 	IgnoreFileMismatchDataSources              string
 	IgnoreFileMismatchEphemerals               string
 	IgnoreFileMismatchFunctions                string
+	IgnoreFileMismatchListResources            string
 	IgnoreFileMismatchResources                string
 	IgnoreFileMissingDataSources               string
 	IgnoreFileMissingEphemerals                string
 	IgnoreFileMissingFunctions                 string
+	IgnoreFileMissingListResources             string
 	IgnoreFileMissingResources                 string
 	LogLevel                                   string
 	Path                                       string
@@ -87,10 +89,12 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-ephemerals", "Comma separated list of ephemerals to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-functions", "Comma separated list of functions to ignore mismatched/extra files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-list-resources", "Comma separated list of list resources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-resources", "Comma separated list of resources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-data-sources", "Comma separated list of data sources to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-ephemerals", "Comma separated list of ephemerals to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-functions", "Comma separated list of functions to ignore missing files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-list-resources", "Comma separated list of list resources to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-resources", "Comma separated list of resources to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-provider-name", "Terraform Provider short name (e.g. aws). Automatically determined if -provider-source is given or if current working directory or provided path is prefixed with terraform-provider-*.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-provider-source", "Terraform Provider source address (e.g. registry.terraform.io/hashicorp/aws) for Terraform CLI 0.13 and later -providers-schema-json. Automatically sets -provider-name by dropping hostname and namespace prefix.")
@@ -139,10 +143,12 @@ func configureCheckCommandFlags(flags *flag.FlagSet, config *CheckCommandConfig)
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchEphemerals, "ignore-file-mismatch-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchFunctions, "ignore-file-mismatch-functions", "", "")
+	flags.StringVar(&config.IgnoreFileMismatchListResources, "ignore-file-mismatch-list-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchResources, "ignore-file-mismatch-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingDataSources, "ignore-file-missing-data-sources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingEphemerals, "ignore-file-missing-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-functions", "", "")
+	flags.StringVar(&config.IgnoreFileMissingListResources, "ignore-file-missing-list-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingResources, "ignore-file-missing-resources", "", "")
 	flags.StringVar(&config.ProviderName, "provider-name", "", "")
 	flags.StringVar(&config.ProviderSource, "provider-source", "", "")
@@ -333,6 +339,11 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMismatchFunctions = strings.Split(v, ",")
 	}
 
+	var ignoreFileMismatchListResources []string
+	if v := config.IgnoreFileMismatchListResources; v != "" {
+		ignoreFileMismatchListResources = strings.Split(v, ",")
+	}
+
 	var ignoreFileMismatchResources []string
 	if v := config.IgnoreFileMismatchResources; v != "" {
 		ignoreFileMismatchResources = strings.Split(v, ",")
@@ -353,12 +364,17 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMissingFunctions = strings.Split(v, ",")
 	}
 
+	var ignoreFileMissingListResources []string
+	if v := config.IgnoreFileMissingListResources; v != "" {
+		ignoreFileMissingListResources = strings.Split(v, ",")
+	}
+
 	var ignoreFileMissingResources []string
 	if v := config.IgnoreFileMissingResources; v != "" {
 		ignoreFileMissingResources = strings.Split(v, ",")
 	}
 
-	var dataSourceNames, ephemeralNames, resourceNames, functionNames []string
+	var dataSourceNames, ephemeralNames, listResourceNames, resourceNames, functionNames []string
 	if config.ProvidersSchemaJson != "" {
 		ps, err := providerSchemas(config.ProvidersSchemaJson)
 
@@ -378,6 +394,7 @@ Check that the current working directory or provided path is prefixed with terra
 		dataSourceNames = providerSchemasDataSources(ps, config.ProviderName, config.ProviderSource)
 		ephemeralNames = providerSchemasEphemerals(ps, config.ProviderName, config.ProviderSource)
 		functionNames = providerSchemasFunctions(ps, config.ProviderName, config.ProviderSource)
+		listResourceNames = providerSchemasListResources(ps, config.ProviderName, config.ProviderSource)
 		resourceNames = providerSchemasResources(ps, config.ProviderName, config.ProviderSource)
 	}
 
@@ -489,6 +506,49 @@ Check that the current working directory or provided path is prefixed with terra
 			IgnoreFileMissing:  ignoreFileMissingFunctions,
 			ResourceType:       check.ResourceTypeFunction,
 			ResourceNames:      functionNames,
+		},
+
+		// list resource
+		RegistryListResourceFile: &check.RegistryListResourceFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                                 config.EnableContentsCheck,
+				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
+				IgnoreContentsCheck:                    ignoreContentsCheckResources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
+				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
+				ProviderName:                           config.ProviderName,
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		LegacyListResourceFile: &check.LegacyListResourceFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                                 config.EnableContentsCheck,
+				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
+				IgnoreContentsCheck:                    ignoreContentsCheckResources,
+				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
+				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
+				ProviderName:                           config.ProviderName,
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		ListResourceFileMismatch: &check.FileMismatchOptions{
+			IgnoreFileMismatch: ignoreFileMismatchListResources,
+			IgnoreFileMissing:  ignoreFileMissingListResources,
+			ProviderName:       config.ProviderName,
+			ResourceType:       check.ResourceTypeListResource,
+			ResourceNames:      listResourceNames,
 		},
 
 		// resource
@@ -731,6 +791,36 @@ func providerSchemasFunctions(ps *tfjson.ProviderSchemas, providerName string, p
 	log.Printf("[DEBUG] Found provider schema functions: %v", functions)
 
 	return functions
+}
+
+// providerSchemasListResources returns all list resource names from a terraform providers schema -json provider.
+func providerSchemasListResources(ps *tfjson.ProviderSchemas, providerName string, providerSource string) []string {
+	if ps == nil || ps.Schemas == nil {
+		return nil
+	}
+
+	provider, ok := ps.Schemas[providerSource]
+
+	if !ok {
+		provider, ok = ps.Schemas[providerName]
+	}
+
+	if !ok {
+		log.Printf("[WARN] Provider source (%s) and name (%s) not found in provider schema", providerSource, providerName)
+		return nil
+	}
+
+	listResources := make([]string, 0, len(provider.ListResourceSchemas))
+
+	for name := range provider.ListResourceSchemas {
+		listResources = append(listResources, name)
+	}
+
+	sort.Strings(listResources)
+
+	log.Printf("[DEBUG] Found provider schema list resources: %v", listResources)
+
+	return listResources
 }
 
 // providerSchemasResources returns all resource names from a terraform providers schema -json provider.
