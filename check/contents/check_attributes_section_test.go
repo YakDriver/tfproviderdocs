@@ -68,6 +68,27 @@ func TestCheckAttributesSection(t *testing.T) {
 			},
 			ExpectError: true,
 		},
+		{
+			Name:         "passing missing heading",
+			Path:         "testdata/attributes/missing_heading.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				AttributesSection: &CheckAttributesSectionOptions{
+					RequireSection: Forbidden,
+				},
+			},
+		},
+		{
+			Name:         "failing present heading",
+			Path:         "testdata/attributes/passing.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				AttributesSection: &CheckAttributesSectionOptions{
+					RequireSection: Forbidden,
+				},
+			},
+			ExpectError: true,
+		},
 	}
 
 	for _, testCase := range testCases {
