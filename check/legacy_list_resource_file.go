@@ -93,7 +93,6 @@ func (check *LegacyListResourceFileCheck) Run(path string, exampleLanguage strin
 
 	// We don't want to check the content for CDKTF files since they are converted
 	if !IsValidCdktfDirectory(filepath.Dir(fullpath)) {
-		log.Printf("[WARN] Running List Resource content checks")
 		if err := NewContentsCheck(check.Options.Contents).Run(fullpath, exampleLanguage, subcategory); err != nil {
 			return fmt.Errorf("%s: error checking file contents: %w", path, err)
 		}
