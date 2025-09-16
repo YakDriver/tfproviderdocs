@@ -12,19 +12,21 @@ const (
 
 	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,ephemeral-resources,guides,resources},website/docs}/**/*`
 
-	LegacyIndexDirectory       = `website/docs`
-	LegacyDataSourcesDirectory = `d`
-	LegacyEphemeralsDirectory  = `ephemeral-resources`
-	LegacyFunctionsDirectory   = `functions`
-	LegacyGuidesDirectory      = `guides`
-	LegacyResourcesDirectory   = `r`
+	LegacyIndexDirectory         = `website/docs`
+	LegacyDataSourcesDirectory   = `d`
+	LegacyEphemeralsDirectory    = `ephemeral-resources`
+	LegacyFunctionsDirectory     = `functions`
+	LegacyGuidesDirectory        = `guides`
+	LegacyListResourcesDirectory = `list-resources`
+	LegacyResourcesDirectory     = `r`
 
-	RegistryIndexDirectory       = `docs`
-	RegistryDataSourcesDirectory = `data-sources`
-	RegistryEphemeralsDirectory  = `ephemeral-resources`
-	RegistryFunctionsDirectory   = `functions`
-	RegistryGuidesDirectory      = `guides`
-	RegistryResourcesDirectory   = `resources`
+	RegistryIndexDirectory         = `docs`
+	RegistryDataSourcesDirectory   = `data-sources`
+	RegistryEphemeralsDirectory    = `ephemeral-resources`
+	RegistryFunctionsDirectory     = `functions`
+	RegistryGuidesDirectory        = `guides`
+	RegistryListResourcesDirectory = `list-resources`
+	RegistryResourcesDirectory     = `resources`
 )
 
 var ValidLegacyDirectories = []string{
@@ -33,6 +35,7 @@ var ValidLegacyDirectories = []string{
 	LegacyIndexDirectory + "/" + LegacyEphemeralsDirectory,
 	LegacyIndexDirectory + "/" + LegacyFunctionsDirectory,
 	LegacyIndexDirectory + "/" + LegacyGuidesDirectory,
+	LegacyIndexDirectory + "/" + LegacyListResourcesDirectory,
 	LegacyIndexDirectory + "/" + LegacyResourcesDirectory,
 }
 
@@ -42,6 +45,7 @@ var ValidRegistryDirectories = []string{
 	RegistryIndexDirectory + "/" + RegistryEphemeralsDirectory,
 	RegistryIndexDirectory + "/" + RegistryFunctionsDirectory,
 	RegistryIndexDirectory + "/" + RegistryGuidesDirectory,
+	RegistryIndexDirectory + "/" + RegistryListResourcesDirectory,
 	RegistryIndexDirectory + "/" + RegistryResourcesDirectory,
 }
 
@@ -58,6 +62,7 @@ var ValidLegacySubdirectories = []string{
 	LegacyEphemeralsDirectory,
 	LegacyFunctionsDirectory,
 	LegacyGuidesDirectory,
+	LegacyListResourcesDirectory,
 	LegacyResourcesDirectory,
 }
 
@@ -66,6 +71,7 @@ var ValidRegistrySubdirectories = []string{
 	RegistryEphemeralsDirectory,
 	RegistryFunctionsDirectory,
 	RegistryGuidesDirectory,
+	RegistryListResourcesDirectory,
 	RegistryResourcesDirectory,
 }
 
