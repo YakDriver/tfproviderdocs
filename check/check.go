@@ -23,10 +23,11 @@ type Check struct {
 }
 
 type CheckOptions struct {
-	DataSourceFileMismatch *FileMismatchOptions
-	EphemeralFileMismatch  *FileMismatchOptions
-	FunctionFileMismatch   *FileMismatchOptions
-	ResourceFileMismatch   *FileMismatchOptions
+	DataSourceFileMismatch   *FileMismatchOptions
+	EphemeralFileMismatch    *FileMismatchOptions
+	FunctionFileMismatch     *FileMismatchOptions
+	ListResourceFileMismatch *FileMismatchOptions
+	ResourceFileMismatch     *FileMismatchOptions
 
 	LegacyDataSourceFile *LegacyDataSourceFileOptions
 	LegacyEphemeralFile  *LegacyEphemeralFileOptions
@@ -38,12 +39,13 @@ type CheckOptions struct {
 	ProviderName   string
 	ProviderSource string
 
-	RegistryDataSourceFile *RegistryDataSourceFileOptions
-	RegistryEphemeralFile  *RegistryEphemeralFileOptions
-	RegistryFunctionFile   *RegistryFunctionFileOptions
-	RegistryGuideFile      *RegistryGuideFileOptions
-	RegistryIndexFile      *RegistryIndexFileOptions
-	RegistryResourceFile   *RegistryResourceFileOptions
+	RegistryDataSourceFile   *RegistryDataSourceFileOptions
+	RegistryEphemeralFile    *RegistryEphemeralFileOptions
+	RegistryFunctionFile     *RegistryFunctionFileOptions
+	RegistryGuideFile        *RegistryGuideFileOptions
+	RegistryIndexFile        *RegistryIndexFileOptions
+	RegistryListResourceFile *RegistryListResourceFileOptions
+	RegistryResourceFile     *RegistryResourceFileOptions
 
 	IgnoreCdktfMissingFiles bool
 }
@@ -109,6 +111,16 @@ func (check *Check) Run(directories map[string][]string) error {
 
 	if files, ok := directories[RegistryIndexDirectory]; ok {
 		if err := NewRegistryIndexFileCheck(check.Options.RegistryIndexFile).RunAll(files); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
+
+	if files, ok := directories[fmt.Sprintf("%s/%s", RegistryIndexDirectory, RegistryListResourcesDirectory)]; ok {
+		if err := NewFileMismatchCheck(check.Options.ListResourceFileMismatch).Run(files); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewRegistryListResourceFileCheck(check.Options.RegistryListResourceFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
