@@ -115,11 +115,7 @@ Options:
 
 func (c *CheckCommand) Name() string { return "check" }
 
-func (c *CheckCommand) Run(args []string) int {
-	var config CheckCommandConfig
-
-	flags := flag.NewFlagSet(c.Name(), flag.ContinueOnError)
-	flags.Usage = func() { c.Ui.Info(c.Help()) }
+func configureCheckCommandFlags(flags *flag.FlagSet, config *CheckCommandConfig) {
 	LogLevelFlag(flags, &config.LogLevel)
 	flags.StringVar(&config.AllowedGuideSubcategories, "allowed-guide-subcategories", "", "")
 	flags.StringVar(&config.AllowedGuideSubcategoriesFile, "allowed-guide-subcategories-file", "", "")
@@ -145,7 +141,7 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.StringVar(&config.IgnoreFileMismatchFunctions, "ignore-file-mismatch-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchResources, "ignore-file-mismatch-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingDataSources, "ignore-file-missing-data-sources", "", "")
-	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-ephemerals", "", "")
+	flags.StringVar(&config.IgnoreFileMissingEphemerals, "ignore-file-missing-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMissingResources, "ignore-file-missing-resources", "", "")
 	flags.StringVar(&config.ProviderName, "provider-name", "", "")
@@ -154,6 +150,14 @@ func (c *CheckCommand) Run(args []string) int {
 	flags.BoolVar(&config.RequireGuideSubcategory, "require-guide-subcategory", false, "")
 	flags.BoolVar(&config.RequireResourceSubcategory, "require-resource-subcategory", false, "")
 	flags.BoolVar(&config.RequireSchemaOrdering, "require-schema-ordering", false, "")
+}
+
+func (c *CheckCommand) Run(args []string) int {
+	var config CheckCommandConfig
+
+	flags := flag.NewFlagSet(c.Name(), flag.ContinueOnError)
+	flags.Usage = func() { c.Ui.Info(c.Help()) }
+	configureCheckCommandFlags(flags, &config)
 
 	if err := flags.Parse(args); err != nil {
 		flags.Usage()
