@@ -14,6 +14,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/YakDriver/tfproviderdocs/check"
+	"github.com/YakDriver/tfproviderdocs/check/contents"
 	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/mitchellh/cli"
 )
@@ -509,6 +510,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Forbidden,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
@@ -526,6 +528,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Forbidden,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
