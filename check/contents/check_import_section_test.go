@@ -9,6 +9,7 @@ func TestCheckImportSection(t *testing.T) {
 		Name         string
 		Path         string
 		ProviderName string
+		CheckOptions *CheckOptions
 		ExpectError  bool
 	}{
 		{
@@ -74,6 +75,17 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 			ExpectError:  true,
 		},
+		{
+			Name:         "forbidden",
+			Path:         "testdata/import/passing.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				ImportSection: &CheckImportSectionOptions{
+					RequireSection: Forbidden,
+				},
+			},
+			ExpectError: true,
+		},
 	}
 
 	for _, testCase := range testCases {
@@ -83,6 +95,8 @@ func TestCheckImportSection(t *testing.T) {
 			if err := doc.Parse(); err != nil {
 				t.Fatalf("unexpected error: %s", err)
 			}
+
+			doc.CheckOptions = testCase.CheckOptions
 
 			got := doc.checkImportSection()
 

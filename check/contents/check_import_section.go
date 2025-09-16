@@ -7,11 +7,25 @@ import (
 	"github.com/YakDriver/tfproviderdocs/markdown"
 )
 
+type CheckImportSectionOptions struct {
+	RequireSection SectionRequirement
+}
+
 func (d *Document) checkImportSection() error {
+	checkOpts := &CheckImportSectionOptions{}
+
+	if d.CheckOptions != nil && d.CheckOptions.ImportSection != nil {
+		checkOpts = d.CheckOptions.ImportSection
+	}
+
 	section := d.Sections.Import
 
 	if section == nil {
 		return nil
+	} else {
+		if checkOpts.RequireSection == Forbidden {
+			return fmt.Errorf("import section should not be present")
+		}
 	}
 
 	heading := section.Heading

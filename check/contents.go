@@ -20,6 +20,7 @@ type ContentsOptions struct {
 	ProviderName                           string
 	RequireAttributesSection               contents.SectionRequirement
 	RequireTimeoutsSection                 contents.SectionRequirement
+	RequireImportSection                   contents.SectionRequirement
 	RequireSchemaOrdering                  bool
 	IgnoreContentsCheck                    []string
 	IgnoreEnhancedRegionCheck              []string
@@ -62,6 +63,9 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 		},
 		TimeoutsSection: &contents.CheckTimeoutsSectionOptions{
 			RequireSection: check.Options.RequireTimeoutsSection,
+		},
+		ImportSection: &contents.CheckImportSectionOptions{
+			RequireSection: check.Options.RequireImportSection,
 		},
 	}
 
