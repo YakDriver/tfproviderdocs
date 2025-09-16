@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	ResourceTypeDataSource = "data source"
-	ResourceTypeEphemeral  = "ephemeral"
-	ResourceTypeFunction   = "function"
-	ResourceTypeResource   = "resource"
+	ResourceTypeDataSource   = "data source"
+	ResourceTypeEphemeral    = "ephemeral"
+	ResourceTypeFunction     = "function"
+	ResourceTypeListResource = "list resource"
+	ResourceTypeResource     = "resource"
 
 	// Terraform Registry Storage Limits
 	RegistryMaximumSizeOfFile = 500000 // 500KB
