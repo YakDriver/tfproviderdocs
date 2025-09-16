@@ -9,12 +9,24 @@ func TestCheckTimeoutsSection(t *testing.T) {
 		Name         string
 		Path         string
 		ProviderName string
+		CheckOptions *CheckOptions
 		ExpectError  bool
 	}{
 		{
 			Name:         "passing",
 			Path:         "testdata/timeouts/passing.md",
 			ProviderName: "test",
+		},
+		{
+			Name:         "forbidden",
+			Path:         "testdata/timeouts/passing.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				TimeoutsSection: &CheckTimeoutsSectionOptions{
+					RequireSection: Forbidden,
+				},
+			},
+			ExpectError: true,
 		},
 	}
 
@@ -25,6 +37,8 @@ func TestCheckTimeoutsSection(t *testing.T) {
 			if err := doc.Parse(); err != nil {
 				t.Fatalf("unexpected error: %s", err)
 			}
+
+			doc.CheckOptions = testCase.CheckOptions
 
 			got := doc.checkTimeoutsSection()
 
