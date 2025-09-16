@@ -29,12 +29,13 @@ type CheckOptions struct {
 	ListResourceFileMismatch *FileMismatchOptions
 	ResourceFileMismatch     *FileMismatchOptions
 
-	LegacyDataSourceFile *LegacyDataSourceFileOptions
-	LegacyEphemeralFile  *LegacyEphemeralFileOptions
-	LegacyFunctionFile   *LegacyFunctionFileOptions
-	LegacyGuideFile      *LegacyGuideFileOptions
-	LegacyIndexFile      *LegacyIndexFileOptions
-	LegacyResourceFile   *LegacyResourceFileOptions
+	LegacyDataSourceFile   *LegacyDataSourceFileOptions
+	LegacyEphemeralFile    *LegacyEphemeralFileOptions
+	LegacyFunctionFile     *LegacyFunctionFileOptions
+	LegacyGuideFile        *LegacyGuideFileOptions
+	LegacyIndexFile        *LegacyIndexFileOptions
+	LegacyListResourceFile *LegacyListResourceFileOptions
+	LegacyResourceFile     *LegacyResourceFileOptions
 
 	ProviderName   string
 	ProviderSource string
@@ -164,6 +165,7 @@ func (check *Check) Run(directories map[string][]string) error {
 	legacyDataSourcesFiles, legacyDataSourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyDataSourcesDirectory)]
 	legacyEphemeralsFiles, legacyEphemeralsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyEphemeralsDirectory)]
 	legacyFunctionsFiles, legacyFunctionsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyFunctionsDirectory)]
+	legacyListResourcesFiles, legacyListResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyListResourcesDirectory)]
 	legacyResourcesFiles, legacyResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyResourcesDirectory)]
 
 	if legacyDataSourcesOk {
@@ -208,6 +210,15 @@ func (check *Check) Run(directories map[string][]string) error {
 		}
 	}
 
+	if legacyListResourcesOk {
+		if err := NewFileMismatchCheck(check.Options.ListResourceFileMismatch).Run(legacyListResourcesFiles); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewLegacyListResourceFileCheck(check.Options.LegacyListResourceFile).RunAll(legacyListResourcesFiles, markdown.FencedCodeBlockLanguageTerraform); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
 	if legacyResourcesOk {
 		if err := NewFileMismatchCheck(check.Options.ResourceFileMismatch).Run(legacyResourcesFiles); err != nil {
 			result = multierror.Append(result, err)
