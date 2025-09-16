@@ -41,6 +41,11 @@ func TestCheck(t *testing.T) {
 			ExpectError: true,
 		},
 		{
+			Name:        "invalid registry directories with functions",
+			BasePath:    "testdata/invalid-registry-directories-functions",
+			ExpectError: true,
+		},
+		{
 			Name:        "invalid legacy directories",
 			BasePath:    "testdata/invalid-legacy-directories",
 			ExpectError: true,

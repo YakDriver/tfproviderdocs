@@ -1,0 +1,1 @@
+# Invalid registry function doc
