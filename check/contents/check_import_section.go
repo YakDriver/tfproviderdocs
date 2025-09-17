@@ -21,6 +21,10 @@ func (d *Document) checkImportSection() error {
 	section := d.Sections.Import
 
 	if section == nil {
+		if checkOpts.RequireSection == Required {
+			return fmt.Errorf("missing import section: ## Import")
+		}
+
 		return nil
 	} else {
 		if checkOpts.RequireSection == Forbidden {
