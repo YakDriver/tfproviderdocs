@@ -9,6 +9,7 @@ import (
 const (
 	walkerSectionUnknown = iota
 	walkerSectionTitle
+	walkerSectionSignature
 	walkerSectionExample
 	walkerSectionArguments
 	walkerSectionAttributes
@@ -23,6 +24,7 @@ type Sections struct {
 	Example    *ExampleSection
 	Import     *ImportSection
 	Timeouts   *TimeoutsSection
+	Signature  *SignatureSection
 	Title      *TitleSection
 }
 
@@ -37,6 +39,13 @@ type ExampleSection struct {
 	// Children contains further nested sections below this section
 	Children []*ExampleSection
 
+	FencedCodeBlocks []*ast.FencedCodeBlock
+	Heading          *ast.Heading
+	Paragraphs       []*ast.Paragraph
+}
+
+// SignatureSection represents a function signature section.
+type SignatureSection struct {
 	FencedCodeBlocks []*ast.FencedCodeBlock
 	Heading          *ast.Heading
 	Paragraphs       []*ast.Paragraph
@@ -108,6 +117,8 @@ func sectionsWalker(document ast.Node, source []byte, resourceName string) (*Sec
 			switch walkerSection {
 			case walkerSectionTitle:
 				result.Title.FencedCodeBlocks = append(result.Title.FencedCodeBlocks, node)
+			case walkerSectionSignature:
+				result.Signature.FencedCodeBlocks = append(result.Signature.FencedCodeBlocks, node)
 			case walkerSectionExample:
 				result.Example.FencedCodeBlocks = append(result.Example.FencedCodeBlocks, node)
 			case walkerSectionArguments:
@@ -130,12 +141,40 @@ func sectionsWalker(document ast.Node, source []byte, resourceName string) (*Sec
 				walkerSection = walkerSectionUnknown
 			}
 
-			if result.Title == nil && strings.Contains(headingText, resourceName) {
-				result.Title = &TitleSection{
+			if result.Title == nil {
+				foundResourceName := false
+				if resourceName != "" {
+					if strings.Contains(headingText, resourceName) {
+						foundResourceName = true
+					}
+					if !foundResourceName {
+						if idx := strings.Index(resourceName, "_"); idx >= 0 && idx < len(resourceName)-1 {
+							candidate := resourceName[idx+1:]
+							if candidate != "" && strings.Contains(headingText, candidate) {
+								foundResourceName = true
+							}
+						}
+					}
+				}
+
+				if foundResourceName {
+					result.Title = &TitleSection{
+						Heading: node,
+					}
+
+					walkerSection = walkerSectionTitle
+					walkerSectionStartingLevel = node.Level
+
+					return ast.WalkContinue, nil
+				}
+			}
+
+			if result.Signature == nil && strings.HasPrefix(headingText, "Signature") {
+				result.Signature = &SignatureSection{
 					Heading: node,
 				}
 
-				walkerSection = walkerSectionTitle
+				walkerSection = walkerSectionSignature
 				walkerSectionStartingLevel = node.Level
 
 				return ast.WalkContinue, nil
@@ -231,6 +270,8 @@ func sectionsWalker(document ast.Node, source []byte, resourceName string) (*Sec
 			switch walkerSection {
 			case walkerSectionTitle:
 				result.Title.Paragraphs = append(result.Title.Paragraphs, node)
+			case walkerSectionSignature:
+				result.Signature.Paragraphs = append(result.Signature.Paragraphs, node)
 			case walkerSectionExample:
 				result.Example.Paragraphs = append(result.Example.Paragraphs, node)
 			case walkerSectionArguments:

@@ -11,7 +11,9 @@ import (
 type LegacyFunctionFileOptions struct {
 	*FileOptions
 
-	FrontMatter *FrontMatterOptions
+	Contents     *ContentsOptions
+	FrontMatter  *FrontMatterOptions
+	ProviderName string
 }
 
 type LegacyFunctionFileCheck struct {
@@ -27,6 +29,14 @@ func NewLegacyFunctionFileCheck(opts *LegacyFunctionFileOptions) *LegacyFunction
 
 	if check.Options == nil {
 		check.Options = &LegacyFunctionFileOptions{}
+	}
+
+	if check.Options.Contents == nil {
+		check.Options.Contents = &ContentsOptions{}
+	}
+
+	if check.Options.Contents.ProviderName == "" {
+		check.Options.Contents.ProviderName = check.Options.ProviderName
 	}
 
 	if check.Options.FileOptions == nil {
@@ -45,7 +55,7 @@ func NewLegacyFunctionFileCheck(opts *LegacyFunctionFileOptions) *LegacyFunction
 	return check
 }
 
-func (check *LegacyFunctionFileCheck) Run(path string) error {
+func (check *LegacyFunctionFileCheck) Run(path string, exampleLanguage string) error {
 	fullpath := check.Options.FullPath(path)
 
 	log.Printf("[DEBUG] Checking file: %s", fullpath)
@@ -69,20 +79,24 @@ func (check *LegacyFunctionFileCheck) Run(path string) error {
 		return fmt.Errorf("%s: error reading file: %w", path, err)
 	}
 
-	_, err = NewFrontMatterCheck(check.Options.FrontMatter).Run(content)
+	subcategory, err := NewFrontMatterCheck(check.Options.FrontMatter).Run(content)
 
 	if err != nil {
 		return fmt.Errorf("%s: error checking file frontmatter: %w", path, err)
 	}
 
+	if err := NewContentsCheck(check.Options.Contents).Run(fullpath, exampleLanguage, subcategory); err != nil {
+		return fmt.Errorf("%s: error checking file contents: %w", path, err)
+	}
+
 	return nil
 }
 
-func (check *LegacyFunctionFileCheck) RunAll(files []string) error {
+func (check *LegacyFunctionFileCheck) RunAll(files []string, exampleLanguage string) error {
 	var result *multierror.Error
 
 	for _, file := range files {
-		if err := check.Run(file); err != nil {
+		if err := check.Run(file, exampleLanguage); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}

@@ -26,6 +26,11 @@ type ContentsOptions struct {
 	IgnoreEnhancedRegionCheck              []string
 	IgnoreEnhancedRegionCheckSubcategories []string
 	TitleSectionPrefixes                   []string
+	RequireSignatureSection                contents.SectionRequirement
+	SignatureHeadingTexts                  []string
+	SignatureRequiresCodeBlock             bool
+	ArgumentsHeadingTexts                  []string
+	AllowArgumentsMissingByline            bool
 
 	DisableRegionArgumentCheck         bool
 	DisallowAttributesSection          bool
@@ -84,6 +89,22 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 
 	if len(check.Options.TitleSectionPrefixes) > 0 {
 		checkOpts.TitleSection = &contents.CheckTitleSectionOptions{AllowedPrefixes: check.Options.TitleSectionPrefixes}
+	}
+
+	if len(check.Options.ArgumentsHeadingTexts) > 0 {
+		checkOpts.ArgumentsSection.AllowedHeadingTexts = check.Options.ArgumentsHeadingTexts
+	}
+
+	if check.Options.AllowArgumentsMissingByline {
+		checkOpts.ArgumentsSection.AllowMissingByline = true
+	}
+
+	if check.Options.RequireSignatureSection != 0 || len(check.Options.SignatureHeadingTexts) > 0 || check.Options.SignatureRequiresCodeBlock {
+		checkOpts.SignatureSection = &contents.CheckSignatureSectionOptions{
+			RequireSection:      check.Options.RequireSignatureSection,
+			AllowedHeadingTexts: check.Options.SignatureHeadingTexts,
+			RequireCodeBlock:    check.Options.SignatureRequiresCodeBlock,
+		}
 	}
 
 	if check.Options.DisableRegionArgumentCheck {
