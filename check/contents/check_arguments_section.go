@@ -12,6 +12,8 @@ type CheckArgumentsSectionOptions struct {
 	RegionAware           bool // The resource is Region-aware and has a top-level region argument.
 	RequireSchemaOrdering bool
 	ExpectedBylineTexts   []string
+	AllowedHeadingTexts   []string
+	AllowMissingByline    bool
 }
 
 func (d *Document) checkArgumentsSection() error {
@@ -34,10 +36,26 @@ func (d *Document) checkArgumentsSection() error {
 	}
 
 	headingText := string(heading.Text(d.source))
-	expectedHeadingText := "Argument Reference"
+	allowedHeadingTexts := []string{"Argument Reference"}
 
-	if headingText != expectedHeadingText {
-		return fmt.Errorf("arguments section heading (%s) should be: %s", headingText, expectedHeadingText)
+	if len(checkOpts.AllowedHeadingTexts) > 0 {
+		allowedHeadingTexts = checkOpts.AllowedHeadingTexts
+	}
+
+	foundHeading := false
+	for _, v := range allowedHeadingTexts {
+		if headingText == v {
+			foundHeading = true
+			break
+		}
+	}
+
+	if !foundHeading {
+		formatted := make([]string, len(allowedHeadingTexts))
+		for i, v := range allowedHeadingTexts {
+			formatted[i] = fmt.Sprintf("%q", v)
+		}
+		return fmt.Errorf("arguments section heading (%s) should be one of: %s", headingText, strings.Join(formatted, ", "))
 	}
 
 	paragraphs := section.Paragraphs
@@ -68,8 +86,14 @@ func (d *Document) checkArgumentsSection() error {
 
 	switch len(paragraphs) {
 	case 0:
-		return fmt.Errorf("argument section byline should be one of: %s", allowedTextsMessage)
+		if !checkOpts.AllowMissingByline {
+			return fmt.Errorf("argument section byline should be one of: %s", allowedTextsMessage)
+		}
 	default:
+		if len(expectedBylineTexts) == 0 {
+			break
+		}
+
 		paragraphText := string(paragraphs[0].Text(d.source))
 
 		found := false

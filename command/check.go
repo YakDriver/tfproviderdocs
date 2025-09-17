@@ -269,10 +269,10 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreContentsCheckEphemerals = strings.Split(v, ",")
 	}
 
-	// var ignoreContentsCheckFunctions []string
-	// if v := config.IgnoreContentsCheckFunctions; v != "" {
-	// 	ignoreContentsCheckFunctions = strings.Split(v, ",")
-	// }
+	var ignoreContentsCheckFunctions []string
+	if v := config.IgnoreContentsCheckFunctions; v != "" {
+		ignoreContentsCheckFunctions = strings.Split(v, ",")
+	}
 
 	var ignoreContentsCheckResources []string
 	if v := config.IgnoreContentsCheckResources; v != "" {
@@ -578,18 +578,50 @@ Check that the current working directory or provided path is prefixed with terra
 
 		// function
 		RegistryFunctionFile: &check.RegistryFunctionFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                      config.EnableContentsCheck,
+				IgnoreContentsCheck:         ignoreContentsCheckFunctions,
+				ProviderName:                config.ProviderName,
+				TitleSectionPrefixes:        []string{"Function"},
+				ArgumentsHeadingTexts:       []string{"Arguments"},
+				AllowArgumentsMissingByline: true,
+				ArgumentsBylineTexts: []string{
+					"This function supports the following arguments:",
+					"This function does not support any arguments.",
+				},
+				RequireSignatureSection:    contents.Required,
+				SignatureHeadingTexts:      []string{"Signature"},
+				SignatureRequiresCodeBlock: true,
+			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
 				AllowedSubcategories: allowedResourceSubcategories,
 				RequireSubcategory:   config.RequireResourceSubcategory,
 			},
+			ProviderName: config.ProviderName,
 		},
 		LegacyFunctionFile: &check.LegacyFunctionFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                      config.EnableContentsCheck,
+				IgnoreContentsCheck:         ignoreContentsCheckFunctions,
+				ProviderName:                config.ProviderName,
+				TitleSectionPrefixes:        []string{"Function"},
+				ArgumentsHeadingTexts:       []string{"Arguments"},
+				AllowArgumentsMissingByline: true,
+				ArgumentsBylineTexts: []string{
+					"This function supports the following arguments:",
+					"This function does not support any arguments.",
+				},
+				RequireSignatureSection:    contents.Required,
+				SignatureHeadingTexts:      []string{"Signature"},
+				SignatureRequiresCodeBlock: true,
+			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
 				AllowedSubcategories: allowedResourceSubcategories,
 				RequireSubcategory:   config.RequireResourceSubcategory,
 			},
+			ProviderName: config.ProviderName,
 		},
 		FunctionFileMismatch: &check.FileMismatchOptions{
 			IgnoreFileMismatch: ignoreFileMismatchFunctions,

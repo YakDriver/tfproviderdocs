@@ -1,11 +1,11 @@
 ---
 subcategory: "Example"
-page_title: "Example: example_thing"
+page_title: "Example: example_function"
 description: |-
   Example description.
 ---
 
-# Function: example_thing
+# Function: example_function
 
 Byline.
 
@@ -13,13 +13,13 @@ Byline.
 
 ```terraform
 # result: foo
-provider::example::example_thing("foo")
+provider::example::example_function("foo")
 ```
 
 ## Signature
 
 ```text
-example_thing(arg string) string
+example_function(arg string) string
 ```
 
 ## Arguments

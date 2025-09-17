@@ -6,40 +6,46 @@ import (
 
 func TestLegacyFunctionFileCheck(t *testing.T) {
 	testCases := []struct {
-		Name        string
-		BasePath    string
-		Path        string
-		Options     *LegacyFunctionFileOptions
-		ExpectError bool
+		Name            string
+		BasePath        string
+		Path            string
+		ExampleLanguage string
+		Options         *LegacyFunctionFileOptions
+		ExpectError     bool
 	}{
 		{
-			Name:     "valid",
-			BasePath: "testdata/valid-legacy-files",
-			Path:     "function.html.markdown",
+			Name:            "valid",
+			BasePath:        "testdata/valid-legacy-files",
+			Path:            "function.html.markdown",
+			ExampleLanguage: "terraform",
 		},
 		{
-			Name:        "invalid extension",
-			BasePath:    "testdata/invalid-legacy-files",
-			Path:        "function_invalid_extension.txt",
-			ExpectError: true,
+			Name:            "invalid extension",
+			BasePath:        "testdata/invalid-legacy-files",
+			Path:            "function_invalid_extension.txt",
+			ExampleLanguage: "terraform",
+			ExpectError:     true,
 		},
 		{
-			Name:        "invalid frontmatter",
-			BasePath:    "testdata/invalid-legacy-files",
-			Path:        "function_invalid_frontmatter.html.markdown",
-			ExpectError: true,
+			Name:            "invalid frontmatter",
+			BasePath:        "testdata/invalid-legacy-files",
+			Path:            "function_invalid_frontmatter.html.markdown",
+			ExampleLanguage: "terraform",
+			ExpectError:     true,
 		},
 		{
-			Name:        "invalid frontmatter with sidebar_current",
-			BasePath:    "testdata/invalid-legacy-files",
-			Path:        "function_with_sidebar_current.html.markdown",
-			ExpectError: true,
+			Name:            "invalid frontmatter with sidebar_current",
+			BasePath:        "testdata/invalid-legacy-files",
+			Path:            "function_with_sidebar_current.html.markdown",
+			ExampleLanguage: "terraform",
+			ExpectError:     true,
 		},
 		{
-			Name:        "invalid frontmatter without layout",
-			BasePath:    "testdata/invalid-legacy-files",
-			Path:        "function_without_layout.html.markdown",
-			ExpectError: true,
+			Name:            "invalid frontmatter without layout",
+			BasePath:        "testdata/invalid-legacy-files",
+			Path:            "function_without_layout.html.markdown",
+			ExampleLanguage: "terraform",
+			ExpectError:     true,
 		},
 	}
 
@@ -49,13 +55,17 @@ func TestLegacyFunctionFileCheck(t *testing.T) {
 				testCase.Options = &LegacyFunctionFileOptions{}
 			}
 
+			if testCase.Options.ProviderName == "" {
+				testCase.Options.ProviderName = "example"
+			}
+
 			if testCase.Options.FileOptions == nil {
 				testCase.Options.FileOptions = &FileOptions{
 					BasePath: testCase.BasePath,
 				}
 			}
 
-			got := NewLegacyFunctionFileCheck(testCase.Options).Run(testCase.Path)
+			got := NewLegacyFunctionFileCheck(testCase.Options).Run(testCase.Path, testCase.ExampleLanguage)
 
 			if got == nil && testCase.ExpectError {
 				t.Errorf("expected error, got no error")

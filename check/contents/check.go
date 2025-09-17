@@ -9,6 +9,7 @@ type CheckOptions struct {
 	TimeoutsSection   *CheckTimeoutsSectionOptions
 	ImportSection     *CheckImportSectionOptions
 	TitleSection      *CheckTitleSectionOptions
+	SignatureSection  *CheckSignatureSectionOptions
 
 	DisallowAttributesSection          bool
 	AttributesSectionDisallowedMessage string
@@ -29,6 +30,12 @@ func (d *Document) Check(opts *CheckOptions) error {
 
 	if err := d.checkExampleSection(); err != nil {
 		return err
+	}
+
+	if d.CheckOptions != nil && d.CheckOptions.SignatureSection != nil {
+		if err := d.checkSignatureSection(); err != nil {
+			return err
+		}
 	}
 
 	if err := d.checkArgumentsSection(); err != nil {

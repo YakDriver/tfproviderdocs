@@ -114,7 +114,7 @@ func (check *Check) Run(directories map[string][]string) error {
 			result = multierror.Append(result, err)
 		}
 
-		if err := NewRegistryFunctionFileCheck(check.Options.RegistryFunctionFile).RunAll(files); err != nil {
+		if err := NewRegistryFunctionFileCheck(check.Options.RegistryFunctionFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
@@ -219,7 +219,7 @@ func (check *Check) Run(directories map[string][]string) error {
 			result = multierror.Append(result, err)
 		}
 
-		if err := NewLegacyFunctionFileCheck(check.Options.LegacyFunctionFile).RunAll(legacyFunctionsFiles); err != nil {
+		if err := NewLegacyFunctionFileCheck(check.Options.LegacyFunctionFile).RunAll(legacyFunctionsFiles, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
