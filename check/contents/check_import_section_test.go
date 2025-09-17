@@ -18,6 +18,17 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 		},
 		{
+			Name:         "missing required section",
+			Path:         "testdata/import/missing_section.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				ImportSection: &CheckImportSectionOptions{
+					RequireSection: Required,
+				},
+			},
+			ExpectError: true,
+		},
+		{
 			Name:         "passing cannot import",
 			Path:         "testdata/import/passing_cannot_import.md",
 			ProviderName: "test",
