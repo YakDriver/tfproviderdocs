@@ -1,6 +1,6 @@
 package contents
 
-import "fmt"
+import "errors"
 
 type CheckOptions struct {
 	ArgumentsSection  *CheckArgumentsSectionOptions
@@ -50,7 +50,7 @@ func (d *Document) Check(opts *CheckOptions) error {
 				msg = d.CheckOptions.AttributesSectionDisallowedMessage
 			}
 
-			return fmt.Errorf(msg)
+			return errors.New(msg)
 		}
 	} else {
 		if err := d.checkAttributesSection(); err != nil {
@@ -70,7 +70,7 @@ func (d *Document) Check(opts *CheckOptions) error {
 				msg = d.CheckOptions.ImportSectionDisallowedMessage
 			}
 
-			return fmt.Errorf(msg)
+			return errors.New(msg)
 		}
 	} else {
 		if err := d.checkImportSection(); err != nil {

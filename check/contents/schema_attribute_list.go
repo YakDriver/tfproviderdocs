@@ -94,7 +94,7 @@ func schemaAttributeListItemWalker(listItem *ast.ListItem, source []byte) (*Sche
 
 			traits := fullDescription[1:traitsEndIndex]
 
-			for _, trait := range strings.Split(traits, ", ") {
+			for trait := range strings.SplitSeq(traits, ", ") {
 				switch trait {
 				case "Boolean", "Number", "String":
 					result.Type = trait

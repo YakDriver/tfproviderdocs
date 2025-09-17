@@ -2,6 +2,7 @@ package contents
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 )
 
@@ -70,14 +71,7 @@ func (d *Document) checkAttributesSection() error {
 	case 1:
 		paragraphText := string(paragraphs[0].Text(d.source))
 
-		found := false
-
-		for _, v := range expectedBylineTexts {
-			if paragraphText == v {
-				found = true
-				break
-			}
-		}
+		found := slices.Contains(expectedBylineTexts, paragraphText)
 
 		if !found {
 			return fmt.Errorf("attribute section byline (%s) should be: %q, %q, %q, or %q", paragraphText, expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])

@@ -42,13 +42,7 @@ func (d *Document) checkArgumentsSection() error {
 		allowedHeadingTexts = checkOpts.AllowedHeadingTexts
 	}
 
-	foundHeading := false
-	for _, v := range allowedHeadingTexts {
-		if headingText == v {
-			foundHeading = true
-			break
-		}
-	}
+	foundHeading := slices.Contains(allowedHeadingTexts, headingText)
 
 	if !foundHeading {
 		formatted := make([]string, len(allowedHeadingTexts))
@@ -96,14 +90,7 @@ func (d *Document) checkArgumentsSection() error {
 
 		paragraphText := string(paragraphs[0].Text(d.source))
 
-		found := false
-
-		for _, v := range expectedBylineTexts {
-			if paragraphText == v {
-				found = true
-				break
-			}
-		}
+		found := slices.Contains(expectedBylineTexts, paragraphText)
 
 		if !found {
 			return fmt.Errorf("argument section byline (%s) should be one of: %s", paragraphText, allowedTextsMessage)

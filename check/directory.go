@@ -3,6 +3,7 @@ package check
 import (
 	"fmt"
 	"path/filepath"
+	"slices"
 
 	"github.com/bmatcuk/doublestar"
 )
@@ -175,23 +176,11 @@ func GetDirectories(basepath string) (map[string][]string, error) {
 }
 
 func IsValidLegacyDirectory(directory string) bool {
-	for _, validLegacyDirectory := range ValidLegacyDirectories {
-		if directory == validLegacyDirectory {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(ValidLegacyDirectories, directory)
 }
 
 func IsValidRegistryDirectory(directory string) bool {
-	for _, validRegistryDirectory := range ValidRegistryDirectories {
-		if directory == validRegistryDirectory {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(ValidRegistryDirectories, directory)
 }
 
 func IsValidCdktfDirectory(directory string) bool {

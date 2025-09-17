@@ -3,6 +3,7 @@ package check
 import (
 	"fmt"
 	"log"
+	"slices"
 
 	"github.com/hashicorp/go-multierror"
 )
@@ -95,33 +96,15 @@ func (check *FileMismatchCheck) Run(files []string) error {
 }
 
 func (check *FileMismatchCheck) IgnoreFileMismatch(file string) bool {
-	for _, ignoreResourceName := range check.Options.IgnoreFileMismatch {
-		if ignoreResourceName == fileResourceName(check.Options.ProviderName, file) {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(check.Options.IgnoreFileMismatch, fileResourceName(check.Options.ProviderName, file))
 }
 
 func (check *FileMismatchCheck) IgnoreFileMissing(resourceName string) bool {
-	for _, ignoreResourceName := range check.Options.IgnoreFileMissing {
-		if ignoreResourceName == resourceName {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(check.Options.IgnoreFileMissing, resourceName)
 }
 
 func fileHasResource(resourceNames []string, providerName, file string) bool {
-	for _, name := range resourceNames {
-		if name == fileResourceName(providerName, file) {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(resourceNames, fileResourceName(providerName, file))
 }
 
 func fileResourceName(providerName, fileName string) string {
