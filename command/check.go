@@ -493,6 +493,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckDataSources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
@@ -510,6 +511,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckDataSources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
@@ -536,6 +538,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckEphemerals,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
@@ -554,6 +557,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckEphemerals,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
@@ -686,6 +690,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
@@ -704,6 +709,7 @@ Check that the current working directory or provided path is prefixed with terra
 			Contents: &check.ContentsOptions{
 				Enable:                                 config.EnableContentsCheck,
 				EnhancedRegionChecks:                   config.EnableEnhancedRegionCheck,
+				RequireAttributesSection:               contents.Required,
 				RequireSchemaOrdering:                  config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                    ignoreContentsCheckResources,
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,

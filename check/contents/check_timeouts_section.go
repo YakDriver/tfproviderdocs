@@ -16,6 +16,9 @@ func (d *Document) checkTimeoutsSection() error {
 	section := d.Sections.Timeouts
 
 	if section == nil {
+		if checkOpts.RequireSection == Required {
+			return fmt.Errorf("missing timeouts section: ## Timeouts")
+		}
 		return nil
 	} else {
 		if checkOpts.RequireSection == Forbidden {
