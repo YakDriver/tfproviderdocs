@@ -9,7 +9,7 @@ import (
 )
 
 // Parse converts a Markdown source into AST and metadata
-func Parse(source []byte) (ast.Node, map[string]interface{}) {
+func Parse(source []byte) (ast.Node, map[string]any) {
 	markdown := goldmark.New(
 		goldmark.WithExtensions(
 			meta.New(),

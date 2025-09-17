@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 )
 
 type FileCheck interface {
@@ -53,11 +54,5 @@ var IgnoreFiles = []string{
 func FileIgnoreCheck(path string) bool {
 	fileName := filepath.Base(path)
 
-	for _, igfi := range IgnoreFiles {
-		if igfi == fileName {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(IgnoreFiles, fileName)
 }

@@ -2,6 +2,7 @@ package check
 
 import (
 	"fmt"
+	"slices"
 
 	"gopkg.in/yaml.v2"
 )
@@ -97,11 +98,5 @@ func (check *FrontMatterCheck) Run(src []byte) (*string, error) {
 }
 
 func isAllowedSubcategory(subcategory string, allowedSubcategories []string) bool {
-	for _, allowedSubcategory := range allowedSubcategories {
-		if subcategory == allowedSubcategory {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(allowedSubcategories, subcategory)
 }

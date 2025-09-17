@@ -2,6 +2,7 @@ package contents
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -42,13 +43,7 @@ func (d *Document) checkSignatureSection() error {
 		allowedHeadingTexts = opts.AllowedHeadingTexts
 	}
 
-	foundHeading := false
-	for _, v := range allowedHeadingTexts {
-		if headingText == v {
-			foundHeading = true
-			break
-		}
-	}
+	foundHeading := slices.Contains(allowedHeadingTexts, headingText)
 
 	if !foundHeading {
 		formatted := make([]string, len(allowedHeadingTexts))

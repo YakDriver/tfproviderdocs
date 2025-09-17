@@ -17,7 +17,7 @@ type Document struct {
 	Sections     *Sections
 
 	document ast.Node
-	metadata map[string]interface{}
+	metadata map[string]any
 	path     string
 	source   []byte
 }
