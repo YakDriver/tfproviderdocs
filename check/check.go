@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	ResourceTypeAction       = "action"
 	ResourceTypeDataSource   = "data source"
 	ResourceTypeEphemeral    = "ephemeral"
 	ResourceTypeFunction     = "function"
@@ -24,12 +25,14 @@ type Check struct {
 }
 
 type CheckOptions struct {
+	ActionFileMismatch       *FileMismatchOptions
 	DataSourceFileMismatch   *FileMismatchOptions
 	EphemeralFileMismatch    *FileMismatchOptions
 	FunctionFileMismatch     *FileMismatchOptions
 	ListResourceFileMismatch *FileMismatchOptions
 	ResourceFileMismatch     *FileMismatchOptions
 
+	LegacyActionFile       *LegacyActionFileOptions
 	LegacyDataSourceFile   *LegacyDataSourceFileOptions
 	LegacyEphemeralFile    *LegacyEphemeralFileOptions
 	LegacyFunctionFile     *LegacyFunctionFileOptions
@@ -41,6 +44,7 @@ type CheckOptions struct {
 	ProviderName   string
 	ProviderSource string
 
+	RegistryActionFile       *RegistryActionFileOptions
 	RegistryDataSourceFile   *RegistryDataSourceFileOptions
 	RegistryEphemeralFile    *RegistryEphemeralFileOptions
 	RegistryFunctionFile     *RegistryFunctionFileOptions
@@ -81,6 +85,16 @@ func (check *Check) Run(directories map[string][]string) error {
 		}
 
 		if err := NewRegistryDataSourceFileCheck(check.Options.RegistryDataSourceFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
+
+	if files, ok := directories[fmt.Sprintf("%s/%s", RegistryIndexDirectory, RegistryActionsDirectory)]; ok {
+		if err := NewFileMismatchCheck(check.Options.ActionFileMismatch).Run(files); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewRegistryActionFileCheck(check.Options.RegistryActionFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
 			result = multierror.Append(result, err)
 		}
 	}
@@ -163,11 +177,22 @@ func (check *Check) Run(directories map[string][]string) error {
 		}
 	}
 
+	legacyActionsFiles, legacyActionsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyActionsDirectory)]
 	legacyDataSourcesFiles, legacyDataSourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyDataSourcesDirectory)]
 	legacyEphemeralsFiles, legacyEphemeralsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyEphemeralsDirectory)]
 	legacyFunctionsFiles, legacyFunctionsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyFunctionsDirectory)]
 	legacyListResourcesFiles, legacyListResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyListResourcesDirectory)]
 	legacyResourcesFiles, legacyResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyResourcesDirectory)]
+
+	if legacyActionsOk {
+		if err := NewFileMismatchCheck(check.Options.ActionFileMismatch).Run(legacyActionsFiles); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewLegacyActionFileCheck(check.Options.LegacyActionFile).RunAll(legacyActionsFiles, markdown.FencedCodeBlockLanguageTerraform); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
 
 	if legacyDataSourcesOk {
 		if err := NewFileMismatchCheck(check.Options.DataSourceFileMismatch).Run(legacyDataSourcesFiles); err != nil {

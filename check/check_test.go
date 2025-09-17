@@ -67,6 +67,18 @@ func TestCheck(t *testing.T) {
 				testCase.Options = &CheckOptions{}
 			}
 
+			if testCase.Options.ActionFileMismatch == nil {
+				testCase.Options.ActionFileMismatch = &FileMismatchOptions{}
+			}
+
+			if testCase.Options.ActionFileMismatch.FileOptions == nil {
+				testCase.Options.ActionFileMismatch.FileOptions = fileOpts
+			}
+
+			if testCase.Options.ActionFileMismatch.ProviderName == "" {
+				testCase.Options.ActionFileMismatch.ProviderName = "test"
+			}
+
 			if testCase.Options.DataSourceFileMismatch == nil {
 				testCase.Options.DataSourceFileMismatch = &FileMismatchOptions{}
 			}
@@ -117,6 +129,14 @@ func TestCheck(t *testing.T) {
 
 			if testCase.Options.ListResourceFileMismatch.ResourceType == "" {
 				testCase.Options.ListResourceFileMismatch.ResourceType = ResourceTypeListResource
+			}
+
+			if testCase.Options.LegacyActionFile == nil {
+				testCase.Options.LegacyActionFile = &LegacyActionFileOptions{}
+			}
+
+			if testCase.Options.LegacyActionFile.FileOptions == nil {
+				testCase.Options.LegacyActionFile.FileOptions = fileOpts
 			}
 
 			if testCase.Options.LegacyDataSourceFile == nil {
@@ -177,6 +197,14 @@ func TestCheck(t *testing.T) {
 
 			if testCase.Options.ProviderName == "" {
 				testCase.Options.ProviderName = "test"
+			}
+
+			if testCase.Options.RegistryActionFile == nil {
+				testCase.Options.RegistryActionFile = &RegistryActionFileOptions{}
+			}
+
+			if testCase.Options.RegistryActionFile.FileOptions == nil {
+				testCase.Options.RegistryActionFile.FileOptions = fileOpts
 			}
 
 			if testCase.Options.RegistryDataSourceFile == nil {

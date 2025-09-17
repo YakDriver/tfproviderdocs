@@ -35,15 +35,30 @@ func TestCheckArgumentsSection(t *testing.T) {
 			ProviderName: "test",
 			ExpectError:  true,
 		},
-		{
-			Name:         "wrong list order",
-			Path:         "testdata/arguments/wrong_list_order.md",
-			ProviderName: "test",
-		},
-		{
-			Name:         "wrong list order",
-			Path:         "testdata/arguments/wrong_list_order.md",
-			ProviderName: "test",
+                {
+                        Name:         "wrong list order",
+                        Path:         "testdata/arguments/wrong_list_order.md",
+                        ProviderName: "test",
+                },
+                {
+                        Name:         "action passing",
+                        Path:         "testdata/arguments/passing_action.md",
+                        ProviderName: "test",
+                        CheckOptions: &CheckOptions{
+                                ArgumentsSection: &CheckArgumentsSectionOptions{
+                                        ExpectedBylineTexts: []string{
+                                                "This action supports the following arguments:",
+                                                "The following arguments are required:",
+                                                "The following arguments are optional:",
+                                                "This action does not support any arguments.",
+                                        },
+                                },
+                        },
+                },
+                {
+                        Name:         "wrong list order",
+                        Path:         "testdata/arguments/wrong_list_order.md",
+                        ProviderName: "test",
 			CheckOptions: &CheckOptions{
 				ArgumentsSection: &CheckArgumentsSectionOptions{
 					RequireSchemaOrdering: true,

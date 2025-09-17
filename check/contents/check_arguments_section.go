@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strings"
 )
 
 type CheckArgumentsSectionOptions struct {
 	EnhancedRegionChecks  bool
 	RegionAware           bool // The resource is Region-aware and has a top-level region argument.
 	RequireSchemaOrdering bool
+	ExpectedBylineTexts   []string
 }
 
 func (d *Document) checkArgumentsSection() error {
@@ -43,18 +45,30 @@ func (d *Document) checkArgumentsSection() error {
 		"This resource supports the following arguments:",
 		"This ephemeral resource supports the following arguments:",
 		"This list resource supports the following arguments:",
+		"This action supports the following arguments:",
 		"The following arguments are required:",
 		"The following arguments are optional:",
 		"This resource does not support any arguments.",
 		"This ephemeral resource does not support any arguments.",
 		"This list resource does not support any arguments.",
+		"This action does not support any arguments.",
 		"This data source does not support any arguments.",
 		"This data source supports the following arguments:",
 	}
 
+	if len(checkOpts.ExpectedBylineTexts) > 0 {
+		expectedBylineTexts = checkOpts.ExpectedBylineTexts
+	}
+
+	allowedTexts := make([]string, len(expectedBylineTexts))
+	for i, v := range expectedBylineTexts {
+		allowedTexts[i] = fmt.Sprintf("%q", v)
+	}
+	allowedTextsMessage := strings.Join(allowedTexts, ", ")
+
 	switch len(paragraphs) {
 	case 0:
-		return fmt.Errorf("argument section byline should be: %q, %q, %q, or %q", expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
+		return fmt.Errorf("argument section byline should be one of: %s", allowedTextsMessage)
 	default:
 		paragraphText := string(paragraphs[0].Text(d.source))
 
@@ -68,7 +82,7 @@ func (d *Document) checkArgumentsSection() error {
 		}
 
 		if !found {
-			return fmt.Errorf("argument section byline (%s) should be: %q, %q, %q, or %q", paragraphText, expectedBylineTexts[0], expectedBylineTexts[1], expectedBylineTexts[2], expectedBylineTexts[3])
+			return fmt.Errorf("argument section byline (%s) should be one of: %s", paragraphText, allowedTextsMessage)
 		}
 
 		if paragraphText == "The following arguments are required:" {
