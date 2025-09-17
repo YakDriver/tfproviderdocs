@@ -17,6 +17,11 @@ func TestCheckExampleSection(t *testing.T) {
 			ProviderName: "test",
 		},
 		{
+			Name:         "passing function provider name",
+			Path:         "testdata/example/function_provider_name.md",
+			ProviderName: "example",
+		},
+		{
 			Name:         "missing code block language",
 			Path:         "testdata/example/missing_code_block_language.md",
 			ProviderName: "test",
