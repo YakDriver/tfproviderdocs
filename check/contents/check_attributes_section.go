@@ -5,8 +5,16 @@ import (
 	"sort"
 )
 
+type SectionRequirement int
+
+const (
+	Required SectionRequirement = iota
+	Forbidden
+)
+
 type CheckAttributesSectionOptions struct {
 	RequireSchemaOrdering bool
+	RequireSection        SectionRequirement
 }
 
 func (d *Document) checkAttributesSection() error {
@@ -19,7 +27,15 @@ func (d *Document) checkAttributesSection() error {
 	section := d.Sections.Attributes
 
 	if section == nil {
-		return fmt.Errorf("missing attribute section: ## Attribute Reference")
+		if checkOpts.RequireSection == Required {
+			return fmt.Errorf("missing attribute section: ## Attribute Reference")
+		} else {
+			return nil
+		}
+	} else {
+		if checkOpts.RequireSection == Forbidden {
+			return fmt.Errorf("attribute section should not be present")
+		}
 	}
 
 	heading := section.Heading

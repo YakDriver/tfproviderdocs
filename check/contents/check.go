@@ -4,6 +4,8 @@ type CheckOptions struct {
 	ArgumentsSection  *CheckArgumentsSectionOptions
 	AttributesSection *CheckAttributesSectionOptions
 	ExamplesSection   *CheckExamplesSectionOptions
+	TimeoutsSection   *CheckTimeoutsSectionOptions
+	ImportSection     *CheckImportSectionOptions
 }
 
 func (d *Document) Check(opts *CheckOptions) error {

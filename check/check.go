@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	ResourceTypeDataSource = "data source"
-	ResourceTypeEphemeral  = "ephemeral"
-	ResourceTypeFunction   = "function"
-	ResourceTypeResource   = "resource"
+	ResourceTypeDataSource   = "data source"
+	ResourceTypeEphemeral    = "ephemeral"
+	ResourceTypeFunction     = "function"
+	ResourceTypeListResource = "list resource"
+	ResourceTypeResource     = "resource"
 
 	// Terraform Registry Storage Limits
 	RegistryMaximumSizeOfFile = 500000 // 500KB
@@ -23,27 +24,30 @@ type Check struct {
 }
 
 type CheckOptions struct {
-	DataSourceFileMismatch *FileMismatchOptions
-	EphemeralFileMismatch  *FileMismatchOptions
-	FunctionFileMismatch   *FileMismatchOptions
-	ResourceFileMismatch   *FileMismatchOptions
+	DataSourceFileMismatch   *FileMismatchOptions
+	EphemeralFileMismatch    *FileMismatchOptions
+	FunctionFileMismatch     *FileMismatchOptions
+	ListResourceFileMismatch *FileMismatchOptions
+	ResourceFileMismatch     *FileMismatchOptions
 
-	LegacyDataSourceFile *LegacyDataSourceFileOptions
-	LegacyEphemeralFile  *LegacyEphemeralFileOptions
-	LegacyFunctionFile   *LegacyFunctionFileOptions
-	LegacyGuideFile      *LegacyGuideFileOptions
-	LegacyIndexFile      *LegacyIndexFileOptions
-	LegacyResourceFile   *LegacyResourceFileOptions
+	LegacyDataSourceFile   *LegacyDataSourceFileOptions
+	LegacyEphemeralFile    *LegacyEphemeralFileOptions
+	LegacyFunctionFile     *LegacyFunctionFileOptions
+	LegacyGuideFile        *LegacyGuideFileOptions
+	LegacyIndexFile        *LegacyIndexFileOptions
+	LegacyListResourceFile *LegacyListResourceFileOptions
+	LegacyResourceFile     *LegacyResourceFileOptions
 
 	ProviderName   string
 	ProviderSource string
 
-	RegistryDataSourceFile *RegistryDataSourceFileOptions
-	RegistryEphemeralFile  *RegistryEphemeralFileOptions
-	RegistryFunctionFile   *RegistryFunctionFileOptions
-	RegistryGuideFile      *RegistryGuideFileOptions
-	RegistryIndexFile      *RegistryIndexFileOptions
-	RegistryResourceFile   *RegistryResourceFileOptions
+	RegistryDataSourceFile   *RegistryDataSourceFileOptions
+	RegistryEphemeralFile    *RegistryEphemeralFileOptions
+	RegistryFunctionFile     *RegistryFunctionFileOptions
+	RegistryGuideFile        *RegistryGuideFileOptions
+	RegistryIndexFile        *RegistryIndexFileOptions
+	RegistryListResourceFile *RegistryListResourceFileOptions
+	RegistryResourceFile     *RegistryResourceFileOptions
 
 	IgnoreCdktfMissingFiles bool
 }
@@ -113,6 +117,16 @@ func (check *Check) Run(directories map[string][]string) error {
 		}
 	}
 
+	if files, ok := directories[fmt.Sprintf("%s/%s", RegistryIndexDirectory, RegistryListResourcesDirectory)]; ok {
+		if err := NewFileMismatchCheck(check.Options.ListResourceFileMismatch).Run(files); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewRegistryListResourceFileCheck(check.Options.RegistryListResourceFile).RunAll(files, markdown.FencedCodeBlockLanguageTerraform); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
+
 	if files, ok := directories[fmt.Sprintf("%s/%s", RegistryIndexDirectory, RegistryResourcesDirectory)]; ok {
 		if err := NewFileMismatchCheck(check.Options.ResourceFileMismatch).Run(files); err != nil {
 			result = multierror.Append(result, err)
@@ -152,6 +166,7 @@ func (check *Check) Run(directories map[string][]string) error {
 	legacyDataSourcesFiles, legacyDataSourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyDataSourcesDirectory)]
 	legacyEphemeralsFiles, legacyEphemeralsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyEphemeralsDirectory)]
 	legacyFunctionsFiles, legacyFunctionsOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyFunctionsDirectory)]
+	legacyListResourcesFiles, legacyListResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyListResourcesDirectory)]
 	legacyResourcesFiles, legacyResourcesOk := directories[fmt.Sprintf("%s/%s", LegacyIndexDirectory, LegacyResourcesDirectory)]
 
 	if legacyDataSourcesOk {
@@ -196,6 +211,15 @@ func (check *Check) Run(directories map[string][]string) error {
 		}
 	}
 
+	if legacyListResourcesOk {
+		if err := NewFileMismatchCheck(check.Options.ListResourceFileMismatch).Run(legacyListResourcesFiles); err != nil {
+			result = multierror.Append(result, err)
+		}
+
+		if err := NewLegacyListResourceFileCheck(check.Options.LegacyListResourceFile).RunAll(legacyListResourcesFiles, markdown.FencedCodeBlockLanguageTerraform); err != nil {
+			result = multierror.Append(result, err)
+		}
+	}
 	if legacyResourcesOk {
 		if err := NewFileMismatchCheck(check.Options.ResourceFileMismatch).Run(legacyResourcesFiles); err != nil {
 			result = multierror.Append(result, err)

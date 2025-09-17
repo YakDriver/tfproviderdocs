@@ -20,7 +20,7 @@ func (d *Document) checkTitleSection() error {
 
 	headingText := string(heading.Text(d.source))
 
-	validPrefixes := []string{"Data Source", "Ephemeral", "Resource"}
+	validPrefixes := []string{"Data Source", "Ephemeral", "List Resource", "Resource"}
 	isValidPrefix := false
 	for _, prefix := range validPrefixes {
 		if strings.HasPrefix(headingText, fmt.Sprintf("%s: ", prefix)) {
