@@ -99,7 +99,15 @@ func TestCheckAttributesSection(t *testing.T) {
 				t.Fatalf("unexpected error: %s", err)
 			}
 
-			doc.CheckOptions = testCase.CheckOptions
+			if testCase.CheckOptions != nil {
+				doc.CheckOptions = testCase.CheckOptions
+			} else {
+				doc.CheckOptions = &CheckOptions{
+					AttributesSection: &CheckAttributesSectionOptions{
+						RequireSection: Required,
+					},
+				}
+			}
 
 			got := doc.checkAttributesSection()
 

@@ -18,6 +18,17 @@ func TestCheckTimeoutsSection(t *testing.T) {
 			ProviderName: "test",
 		},
 		{
+			Name:         "missing required",
+			Path:         "testdata/timeouts/missing.md",
+			ProviderName: "test",
+			CheckOptions: &CheckOptions{
+				TimeoutsSection: &CheckTimeoutsSectionOptions{
+					RequireSection: Required,
+				},
+			},
+			ExpectError: true,
+		},
+		{
 			Name:         "forbidden",
 			Path:         "testdata/timeouts/passing.md",
 			ProviderName: "test",

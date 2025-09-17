@@ -8,7 +8,8 @@ import (
 type SectionRequirement int
 
 const (
-	Required SectionRequirement = iota
+	Optional SectionRequirement = iota
+	Required
 	Forbidden
 )
 
