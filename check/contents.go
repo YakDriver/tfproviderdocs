@@ -25,6 +25,7 @@ type ContentsOptions struct {
 	IgnoreContentsCheck                    []string
 	IgnoreEnhancedRegionCheck              []string
 	IgnoreEnhancedRegionCheckSubcategories []string
+	TitleSectionPrefixes                   []string
 
 	DisableRegionArgumentCheck         bool
 	DisallowAttributesSection          bool
@@ -79,6 +80,10 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 		AttributesSectionDisallowedMessage: check.Options.AttributesSectionDisallowedMessage,
 		DisallowImportSection:              check.Options.DisallowImportSection,
 		ImportSectionDisallowedMessage:     check.Options.ImportSectionDisallowedMessage,
+	}
+
+	if len(check.Options.TitleSectionPrefixes) > 0 {
+		checkOpts.TitleSection = &contents.CheckTitleSectionOptions{AllowedPrefixes: check.Options.TitleSectionPrefixes}
 	}
 
 	if check.Options.DisableRegionArgumentCheck {

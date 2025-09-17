@@ -9,18 +9,27 @@ func TestCheckTitleSection(t *testing.T) {
 		Name         string
 		Path         string
 		ProviderName string
+		Options      *CheckOptions
 		ExpectError  bool
 	}{
-                {
-                        Name:         "passing",
-                        Path:         "testdata/title/passing.md",
-                        ProviderName: "test",
-                },
-                {
-                        Name:         "action",
-                        Path:         "testdata/title/action.md",
-                        ProviderName: "test",
-                },
+		{
+			Name:         "passing",
+			Path:         "testdata/title/passing.md",
+			ProviderName: "test",
+		},
+		{
+			Name:         "action",
+			Path:         "testdata/title/action.md",
+			ProviderName: "test",
+		},
+		{
+			Name:         "list resource",
+			Path:         "testdata/title/list_resource.md",
+			ProviderName: "test",
+			Options: &CheckOptions{
+				TitleSection: &CheckTitleSectionOptions{AllowedPrefixes: []string{"List Resource"}},
+			},
+		},
 		{
 			Name:         "missing heading",
 			Path:         "testdata/title/missing_heading.md",
@@ -46,6 +55,15 @@ func TestCheckTitleSection(t *testing.T) {
 			ExpectError:  true,
 		},
 		{
+			Name:         "list resource wrong type",
+			Path:         "testdata/title/list_resource_wrong_type.md",
+			ProviderName: "test",
+			Options: &CheckOptions{
+				TitleSection: &CheckTitleSectionOptions{AllowedPrefixes: []string{"List Resource"}},
+			},
+			ExpectError: true,
+		},
+		{
 			Name:         "wrong code block section",
 			Path:         "testdata/title/wrong_code_block_section.md",
 			ProviderName: "test",
@@ -56,6 +74,8 @@ func TestCheckTitleSection(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
 			doc := NewDocument(testCase.Path, testCase.ProviderName)
+
+			doc.CheckOptions = testCase.Options
 
 			if err := doc.Parse(); err != nil {
 				t.Fatalf("unexpected error: %s", err)

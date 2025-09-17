@@ -21,6 +21,10 @@ func (d *Document) checkTitleSection() error {
 	headingText := string(heading.Text(d.source))
 
 	validPrefixes := []string{"Action", "Data Source", "Ephemeral", "List Resource", "Resource"}
+
+	if d.CheckOptions != nil && d.CheckOptions.TitleSection != nil && len(d.CheckOptions.TitleSection.AllowedPrefixes) > 0 {
+		validPrefixes = d.CheckOptions.TitleSection.AllowedPrefixes
+	}
 	isValidPrefix := false
 	for _, prefix := range validPrefixes {
 		if strings.HasPrefix(headingText, fmt.Sprintf("%s: ", prefix)) {

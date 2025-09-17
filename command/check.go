@@ -434,6 +434,7 @@ Check that the current working directory or provided path is prefixed with terra
 				RequireSchemaOrdering:              config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                ignoreContentsCheckActions,
 				ProviderName:                       config.ProviderName,
+				TitleSectionPrefixes:               []string{"Action"},
 				DisableRegionArgumentCheck:         true,
 				DisallowAttributesSection:          true,
 				AttributesSectionDisallowedMessage: "actions documentation cannot include an attributes section",
@@ -459,6 +460,7 @@ Check that the current working directory or provided path is prefixed with terra
 				RequireSchemaOrdering:              config.RequireSchemaOrdering,
 				IgnoreContentsCheck:                ignoreContentsCheckActions,
 				ProviderName:                       config.ProviderName,
+				TitleSectionPrefixes:               []string{"Action"},
 				DisableRegionArgumentCheck:         true,
 				DisallowAttributesSection:          true,
 				AttributesSectionDisallowedMessage: "actions documentation cannot include an attributes section",
@@ -496,6 +498,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Data Source"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -512,6 +515,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckDataSources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Data Source"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -537,6 +541,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Ephemeral"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -554,6 +559,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckEphemerals,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Ephemeral"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -605,6 +611,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"List Resource"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -625,6 +632,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"List Resource"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -651,6 +659,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Resource"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{
@@ -668,6 +677,7 @@ Check that the current working directory or provided path is prefixed with terra
 				IgnoreEnhancedRegionCheck:              ignoreEnhancedRegionCheckResources,
 				IgnoreEnhancedRegionCheckSubcategories: ignoreEnhancedRegionCheckSubcategories,
 				ProviderName:                           config.ProviderName,
+				TitleSectionPrefixes:                   []string{"Resource"},
 			},
 			FileOptions: fileOpts,
 			FrontMatter: &check.FrontMatterOptions{

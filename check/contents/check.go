@@ -8,11 +8,16 @@ type CheckOptions struct {
 	ExamplesSection   *CheckExamplesSectionOptions
 	TimeoutsSection   *CheckTimeoutsSectionOptions
 	ImportSection     *CheckImportSectionOptions
+	TitleSection      *CheckTitleSectionOptions
 
 	DisallowAttributesSection          bool
 	AttributesSectionDisallowedMessage string
 	DisallowImportSection              bool
 	ImportSectionDisallowedMessage     string
+}
+
+type CheckTitleSectionOptions struct {
+	AllowedPrefixes []string
 }
 
 func (d *Document) Check(opts *CheckOptions) error {
