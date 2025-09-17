@@ -53,7 +53,15 @@ func (d *Document) checkExampleSection() error {
 
 		text := markdown.FencedCodeBlockText(fencedCodeBlock, d.source)
 
-		if !strings.Contains(text, d.ResourceName) {
+		altResourceName := d.ResourceName
+		if d.ProviderName != "" {
+			trimmed := strings.TrimPrefix(d.ResourceName, d.ProviderName+"_")
+			if trimmed != "" && trimmed != d.ResourceName {
+				altResourceName = trimmed
+			}
+		}
+
+		if !strings.Contains(text, d.ResourceName) && !strings.Contains(text, altResourceName) {
 			return fmt.Errorf("example section code block text should contain resource name: %s", d.ResourceName)
 		}
 	}
