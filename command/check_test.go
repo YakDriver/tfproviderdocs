@@ -263,6 +263,96 @@ func TestProviderSchemasDataSources(t *testing.T) {
 	}
 }
 
+func TestProviderSchemasActions(t *testing.T) {
+	testCases := []struct {
+		Name            string
+		ProviderName    string
+		ProviderSource  string
+		ProvidersSchema *tfjson.ProviderSchemas
+		Expect          []string
+	}{
+		{
+			Name:            "no providers schemas",
+			ProviderName:    "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{},
+			Expect:          nil,
+		},
+		{
+			Name:         "provider name not found",
+			ProviderName: "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"incorrect": {},
+				},
+			},
+			Expect: nil,
+		},
+		{
+			Name:           "provider source not found",
+			ProviderSource: "registry.terraform.io/test/test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"test": {},
+				},
+			},
+			Expect: nil,
+		},
+		{
+			Name:         "provider name found",
+			ProviderName: "test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"incorrect": {},
+					"test": {
+						ActionSchemas: map[string]*tfjson.ActionSchema{
+							"test_action1": {},
+							"test_action2": {},
+							"test_action3": {},
+						},
+					},
+				},
+			},
+			Expect: []string{
+				"test_action1",
+				"test_action2",
+				"test_action3",
+			},
+		},
+		{
+			Name:           "provider source found",
+			ProviderSource: "registry.terraform.io/test/test",
+			ProvidersSchema: &tfjson.ProviderSchemas{
+				Schemas: map[string]*tfjson.ProviderSchema{
+					"registry.terraform.io/test/incorrect": {},
+					"registry.terraform.io/test/test": {
+						ActionSchemas: map[string]*tfjson.ActionSchema{
+							"test_action1": {},
+							"test_action2": {},
+							"test_action3": {},
+						},
+					},
+				},
+			},
+			Expect: []string{
+				"test_action1",
+				"test_action2",
+				"test_action3",
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.Name, func(t *testing.T) {
+			want := testCase.Expect
+			got := providerSchemasActions(testCase.ProvidersSchema, testCase.ProviderName, testCase.ProviderSource)
+
+			if !reflect.DeepEqual(want, got) {
+				t.Errorf("mismatch:\n\nwant:\n\n%v\n\ngot:\n\n%v\n\n", want, got)
+			}
+		})
+	}
+}
+
 func TestProviderSchemasEphemerals(t *testing.T) {
 	testCases := []struct {
 		Name            string

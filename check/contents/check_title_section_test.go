@@ -11,11 +11,16 @@ func TestCheckTitleSection(t *testing.T) {
 		ProviderName string
 		ExpectError  bool
 	}{
-		{
-			Name:         "passing",
-			Path:         "testdata/title/passing.md",
-			ProviderName: "test",
-		},
+                {
+                        Name:         "passing",
+                        Path:         "testdata/title/passing.md",
+                        ProviderName: "test",
+                },
+                {
+                        Name:         "action",
+                        Path:         "testdata/title/action.md",
+                        ProviderName: "test",
+                },
 		{
 			Name:         "missing heading",
 			Path:         "testdata/title/missing_heading.md",

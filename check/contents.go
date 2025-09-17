@@ -25,6 +25,13 @@ type ContentsOptions struct {
 	IgnoreContentsCheck                    []string
 	IgnoreEnhancedRegionCheck              []string
 	IgnoreEnhancedRegionCheckSubcategories []string
+
+	DisableRegionArgumentCheck         bool
+	DisallowAttributesSection          bool
+	AttributesSectionDisallowedMessage string
+	DisallowImportSection              bool
+	ImportSectionDisallowedMessage     string
+	ArgumentsBylineTexts               []string
 }
 
 func NewContentsCheck(opts *ContentsOptions) *ContentsCheck {
@@ -53,6 +60,7 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 			EnhancedRegionChecks:  check.Options.EnhancedRegionChecks,
 			RegionAware:           true,
 			RequireSchemaOrdering: check.Options.RequireSchemaOrdering,
+			ExpectedBylineTexts:   check.Options.ArgumentsBylineTexts,
 		},
 		AttributesSection: &contents.CheckAttributesSectionOptions{
 			RequireSchemaOrdering: check.Options.RequireSchemaOrdering,
@@ -67,6 +75,14 @@ func (check *ContentsCheck) Run(path string, exampleLanguage string, subcategory
 		ImportSection: &contents.CheckImportSectionOptions{
 			RequireSection: check.Options.RequireImportSection,
 		},
+		DisallowAttributesSection:          check.Options.DisallowAttributesSection,
+		AttributesSectionDisallowedMessage: check.Options.AttributesSectionDisallowedMessage,
+		DisallowImportSection:              check.Options.DisallowImportSection,
+		ImportSectionDisallowedMessage:     check.Options.ImportSectionDisallowedMessage,
+	}
+
+	if check.Options.DisableRegionArgumentCheck {
+		checkOpts.ArgumentsSection.RegionAware = false
 	}
 
 	doc := contents.NewDocument(path, check.Options.ProviderName)

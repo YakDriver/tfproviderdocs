@@ -28,6 +28,7 @@ type CheckCommandConfig struct {
 	EnableEnhancedRegionCheck                  bool
 	IgnoreCdktfMissingFiles                    bool
 	IgnoreContentsCheckDataSources             string
+	IgnoreContentsCheckActions                 string
 	IgnoreContentsCheckEphemerals              string
 	IgnoreContentsCheckFunctions               string
 	IgnoreContentsCheckResources               string
@@ -40,11 +41,13 @@ type CheckCommandConfig struct {
 	IgnoreEnhancedRegionCheckSubcategories     string
 	IgnoreEnhancedRegionCheckSubcategoriesFile string
 	IgnoreFileMismatchDataSources              string
+	IgnoreFileMismatchActions                  string
 	IgnoreFileMismatchEphemerals               string
 	IgnoreFileMismatchFunctions                string
 	IgnoreFileMismatchListResources            string
 	IgnoreFileMismatchResources                string
 	IgnoreFileMissingDataSources               string
+	IgnoreFileMissingActions                   string
 	IgnoreFileMissingEphemerals                string
 	IgnoreFileMissingFunctions                 string
 	IgnoreFileMissingListResources             string
@@ -76,6 +79,7 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-enable-enhanced-region-check", "Enable enhanced Region functionality checks (requires -enable-contents-check).")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-cdktf-missing-files", "Ignore checks for missing CDK for Terraform documentation files when iteratively introducing them in large providers.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-data-sources", "Comma separated list of data sources to ignore contents checking.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-actions", "Comma separated list of actions to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-ephemerals", "Comma separated list of ephemerals to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-functions", "Comma separated list of functions to ignore contents checking.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-contents-check-resources", "Comma separated list of resources to ignore contents checking.")
@@ -88,11 +92,13 @@ func (*CheckCommand) Help() string {
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories", "Comma separated list of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-enhanced-region-check-subcategories-file", "Path to newline separated file of frontmatter subcategories to ignore enhanced Region functionality checks.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-data-sources", "Comma separated list of data sources to ignore mismatched/extra files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-actions", "Comma separated list of actions to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-ephemerals", "Comma separated list of ephemerals to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-functions", "Comma separated list of functions to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-list-resources", "Comma separated list of list resources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-mismatch-resources", "Comma separated list of resources to ignore mismatched/extra files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-data-sources", "Comma separated list of data sources to ignore missing files.")
+	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-actions", "Comma separated list of actions to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-ephemerals", "Comma separated list of ephemerals to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-functions", "Comma separated list of functions to ignore missing files.")
 	fmt.Fprintf(opts, CommandHelpOptionFormat, "-ignore-file-missing-list-resources", "Comma separated list of list resources to ignore missing files.")
@@ -130,6 +136,7 @@ func configureCheckCommandFlags(flags *flag.FlagSet, config *CheckCommandConfig)
 	flags.BoolVar(&config.EnableEnhancedRegionCheck, "enable-enhanced-region-check", false, "")
 	flags.BoolVar(&config.IgnoreCdktfMissingFiles, "ignore-cdktf-missing-files", false, "")
 	flags.StringVar(&config.IgnoreContentsCheckDataSources, "ignore-contents-check-data-sources", "", "")
+	flags.StringVar(&config.IgnoreContentsCheckActions, "ignore-contents-check-actions", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckEphemerals, "ignore-contents-check-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckFunctions, "ignore-contents-check-functions", "", "")
 	flags.StringVar(&config.IgnoreContentsCheckResources, "ignore-contents-check-resources", "", "")
@@ -142,11 +149,13 @@ func configureCheckCommandFlags(flags *flag.FlagSet, config *CheckCommandConfig)
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategories, "ignore-enhanced-region-check-subcategories", "", "")
 	flags.StringVar(&config.IgnoreEnhancedRegionCheckSubcategoriesFile, "ignore-enhanced-region-check-subcategories-file", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchDataSources, "ignore-file-mismatch-data-sources", "", "")
+	flags.StringVar(&config.IgnoreFileMismatchActions, "ignore-file-mismatch-actions", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchEphemerals, "ignore-file-mismatch-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchFunctions, "ignore-file-mismatch-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchListResources, "ignore-file-mismatch-list-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMismatchResources, "ignore-file-mismatch-resources", "", "")
 	flags.StringVar(&config.IgnoreFileMissingDataSources, "ignore-file-missing-data-sources", "", "")
+	flags.StringVar(&config.IgnoreFileMissingActions, "ignore-file-missing-actions", "", "")
 	flags.StringVar(&config.IgnoreFileMissingEphemerals, "ignore-file-missing-ephemerals", "", "")
 	flags.StringVar(&config.IgnoreFileMissingFunctions, "ignore-file-missing-functions", "", "")
 	flags.StringVar(&config.IgnoreFileMissingListResources, "ignore-file-missing-list-resources", "", "")
@@ -246,8 +255,13 @@ func (c *CheckCommand) Run(args []string) int {
 	}
 
 	var ignoreContentsCheckDataSources []string
+	var ignoreContentsCheckActions []string
 	if v := config.IgnoreContentsCheckDataSources; v != "" {
 		ignoreContentsCheckDataSources = strings.Split(v, ",")
+	}
+
+	if v := config.IgnoreContentsCheckActions; v != "" {
+		ignoreContentsCheckActions = strings.Split(v, ",")
 	}
 
 	var ignoreContentsCheckEphemerals []string
@@ -326,8 +340,13 @@ func (c *CheckCommand) Run(args []string) int {
 	}
 
 	var ignoreFileMismatchDataSources []string
+	var ignoreFileMismatchActions []string
 	if v := config.IgnoreFileMismatchDataSources; v != "" {
 		ignoreFileMismatchDataSources = strings.Split(v, ",")
+	}
+
+	if v := config.IgnoreFileMismatchActions; v != "" {
+		ignoreFileMismatchActions = strings.Split(v, ",")
 	}
 
 	var ignoreFileMismatchEphemerals []string
@@ -351,10 +370,14 @@ func (c *CheckCommand) Run(args []string) int {
 	}
 
 	var ignoreFileMissingDataSources []string
+	var ignoreFileMissingActions []string
 	if v := config.IgnoreFileMissingDataSources; v != "" {
 		ignoreFileMissingDataSources = strings.Split(v, ",")
 	}
 
+	if v := config.IgnoreFileMissingActions; v != "" {
+		ignoreFileMissingActions = strings.Split(v, ",")
+	}
 	var ignoreFileMissingEphemerals []string
 	if v := config.IgnoreFileMissingEphemerals; v != "" {
 		ignoreFileMissingEphemerals = strings.Split(v, ",")
@@ -375,7 +398,7 @@ func (c *CheckCommand) Run(args []string) int {
 		ignoreFileMissingResources = strings.Split(v, ",")
 	}
 
-	var dataSourceNames, ephemeralNames, listResourceNames, resourceNames, functionNames []string
+	var actionNames, dataSourceNames, ephemeralNames, listResourceNames, resourceNames, functionNames []string
 	if config.ProvidersSchemaJson != "" {
 		ps, err := providerSchemas(config.ProvidersSchemaJson)
 
@@ -392,6 +415,7 @@ Check that the current working directory or provided path is prefixed with terra
 			return 1
 		}
 
+		actionNames = providerSchemasActions(ps, config.ProviderName, config.ProviderSource)
 		dataSourceNames = providerSchemasDataSources(ps, config.ProviderName, config.ProviderSource)
 		ephemeralNames = providerSchemasEphemerals(ps, config.ProviderName, config.ProviderSource)
 		functionNames = providerSchemasFunctions(ps, config.ProviderName, config.ProviderSource)
@@ -403,6 +427,65 @@ Check that the current working directory or provided path is prefixed with terra
 		BasePath: config.Path,
 	}
 	checkOpts := &check.CheckOptions{
+		// action
+		RegistryActionFile: &check.RegistryActionFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                             config.EnableContentsCheck,
+				RequireSchemaOrdering:              config.RequireSchemaOrdering,
+				IgnoreContentsCheck:                ignoreContentsCheckActions,
+				ProviderName:                       config.ProviderName,
+				DisableRegionArgumentCheck:         true,
+				DisallowAttributesSection:          true,
+				AttributesSectionDisallowedMessage: "actions documentation cannot include an attributes section",
+				DisallowImportSection:              true,
+				ImportSectionDisallowedMessage:     "actions documentation cannot include an import section",
+				ArgumentsBylineTexts: []string{
+					"This action supports the following arguments:",
+					"The following arguments are required:",
+					"The following arguments are optional:",
+					"This action does not support any arguments.",
+				},
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		LegacyActionFile: &check.LegacyActionFileOptions{
+			Contents: &check.ContentsOptions{
+				Enable:                             config.EnableContentsCheck,
+				RequireSchemaOrdering:              config.RequireSchemaOrdering,
+				IgnoreContentsCheck:                ignoreContentsCheckActions,
+				ProviderName:                       config.ProviderName,
+				DisableRegionArgumentCheck:         true,
+				DisallowAttributesSection:          true,
+				AttributesSectionDisallowedMessage: "actions documentation cannot include an attributes section",
+				DisallowImportSection:              true,
+				ImportSectionDisallowedMessage:     "actions documentation cannot include an import section",
+				ArgumentsBylineTexts: []string{
+					"This action supports the following arguments:",
+					"The following arguments are required:",
+					"The following arguments are optional:",
+					"This action does not support any arguments.",
+				},
+			},
+			FileOptions: fileOpts,
+			FrontMatter: &check.FrontMatterOptions{
+				AllowedSubcategories: allowedResourceSubcategories,
+				RequireSubcategory:   config.RequireResourceSubcategory,
+			},
+			ProviderName: config.ProviderName,
+		},
+		ActionFileMismatch: &check.FileMismatchOptions{
+			IgnoreFileMismatch: ignoreFileMismatchActions,
+			IgnoreFileMissing:  ignoreFileMissingActions,
+			ProviderName:       config.ProviderName,
+			ResourceType:       check.ResourceTypeAction,
+			ResourceNames:      actionNames,
+		},
+
 		// data source
 		RegistryDataSourceFile: &check.RegistryDataSourceFileOptions{
 			Contents: &check.ContentsOptions{
@@ -738,6 +821,36 @@ func providerSchemasDataSources(ps *tfjson.ProviderSchemas, providerName string,
 	log.Printf("[DEBUG] Found provider schema data sources: %v", dataSources)
 
 	return dataSources
+}
+
+// providerSchemasActions returns all action names from a terraform providers schema -json provider.
+func providerSchemasActions(ps *tfjson.ProviderSchemas, providerName string, providerSource string) []string {
+	if ps == nil || ps.Schemas == nil {
+		return nil
+	}
+
+	provider, ok := ps.Schemas[providerSource]
+
+	if !ok {
+		provider, ok = ps.Schemas[providerName]
+	}
+
+	if !ok {
+		log.Printf("[WARN] Provider source (%s) and name (%s) not found in provider schema", providerSource, providerName)
+		return nil
+	}
+
+	actions := make([]string, 0, len(provider.ActionSchemas))
+
+	for name := range provider.ActionSchemas {
+		actions = append(actions, name)
+	}
+
+	sort.Strings(actions)
+
+	log.Printf("[DEBUG] Found provider schema actions: %v", actions)
+
+	return actions
 }
 
 // providerSchemasEphemerals returns all ephemeral names from a terraform providers schema -json provider.

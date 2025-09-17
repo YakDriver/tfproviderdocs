@@ -10,9 +10,10 @@ import (
 const (
 	CdktfIndexDirectory = `cdktf`
 
-	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{data-sources,ephemeral-resources,functions,guides,list-resources,resources},website/docs}/**/*`
+	DocumentationGlobPattern = `{docs/index.md,docs/{,cdktf/}{actions,data-sources,ephemeral-resources,functions,guides,list-resources,resources},website/docs}/**/*`
 
 	LegacyIndexDirectory         = `website/docs`
+	LegacyActionsDirectory       = `actions`
 	LegacyDataSourcesDirectory   = `d`
 	LegacyEphemeralsDirectory    = `ephemeral-resources`
 	LegacyFunctionsDirectory     = `functions`
@@ -21,6 +22,7 @@ const (
 	LegacyResourcesDirectory     = `r`
 
 	RegistryIndexDirectory         = `docs`
+	RegistryActionsDirectory       = `actions`
 	RegistryDataSourcesDirectory   = `data-sources`
 	RegistryEphemeralsDirectory    = `ephemeral-resources`
 	RegistryFunctionsDirectory     = `functions`
@@ -31,6 +33,7 @@ const (
 
 var ValidLegacyDirectories = []string{
 	LegacyIndexDirectory,
+	LegacyIndexDirectory + "/" + LegacyActionsDirectory,
 	LegacyIndexDirectory + "/" + LegacyDataSourcesDirectory,
 	LegacyIndexDirectory + "/" + LegacyEphemeralsDirectory,
 	LegacyIndexDirectory + "/" + LegacyFunctionsDirectory,
@@ -41,6 +44,7 @@ var ValidLegacyDirectories = []string{
 
 var ValidRegistryDirectories = []string{
 	RegistryIndexDirectory,
+	RegistryIndexDirectory + "/" + RegistryActionsDirectory,
 	RegistryIndexDirectory + "/" + RegistryDataSourcesDirectory,
 	RegistryIndexDirectory + "/" + RegistryEphemeralsDirectory,
 	RegistryIndexDirectory + "/" + RegistryFunctionsDirectory,
@@ -58,6 +62,7 @@ var ValidCdktfLanguages = []string{
 }
 
 var ValidLegacySubdirectories = []string{
+	LegacyActionsDirectory,
 	LegacyDataSourcesDirectory,
 	LegacyEphemeralsDirectory,
 	LegacyFunctionsDirectory,
@@ -67,6 +72,7 @@ var ValidLegacySubdirectories = []string{
 }
 
 var ValidRegistrySubdirectories = []string{
+	RegistryActionsDirectory,
 	RegistryDataSourcesDirectory,
 	RegistryEphemeralsDirectory,
 	RegistryFunctionsDirectory,
@@ -146,6 +152,10 @@ func GetDirectories(basepath string) (map[string][]string, error) {
 	for _, file := range files {
 		// Simple skip of glob matches that are known directories
 		if IsValidRegistryDirectory(file) || IsValidLegacyDirectory(file) || IsValidCdktfDirectory(file) {
+			continue
+		}
+
+		if filepath.Base(file) == ".keep" {
 			continue
 		}
 
