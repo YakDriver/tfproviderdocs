@@ -1,7 +1,8 @@
 # Example Usage
-<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
+<!-- Copyright (c) IBM Corp. 2019-2026 -->
 <!-- SPDX-License-Identifier: MPL-2.0 -->
 
+<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
 ```terraform
 resource "test_wrong_heading_level" "example" {
   name = "example"

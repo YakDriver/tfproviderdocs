@@ -1,9 +1,10 @@
-# Copyright (c) HashiCorp, Inc. 2019-2026
+# Copyright (c) IBM Corp. 2019-2026
 # "SPDX-License-Identifier: MPL-2.0"
 
+# Copyright (c) HashiCorp, Inc. 2019-2026
 # tfproviderdocs Copyplop Configuration
 copyright:
-  holder: "HashiCorp, Inc."
+  holder: "IBM Corp."
   start_year: 2019
   current_year: 2026
   format: "Copyright (c) {{.Holder}} {{.StartYear}}-{{.CurrentYear}}"

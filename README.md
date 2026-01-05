@@ -1,7 +1,8 @@
 # tfproviderdocs
-<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
+<!-- Copyright (c) IBM Corp. 2019-2026 -->
 <!-- SPDX-License-Identifier: MPL-2.0 -->
 
+<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
 A documentation tool for [Terraform Provider](https://www.terraform.io/docs/providers/index.html) code.
 
 ## Install
