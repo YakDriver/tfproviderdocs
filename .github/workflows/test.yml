@@ -53,34 +53,6 @@ jobs:
           git diff --exit-code || \
             (echo; echo "Unexpected difference after go fmt. Run 'go fmt ./...' and commit."; exit 1)
 
-  new-go-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go Stable
-        uses: actions/setup-go@v6
-        with:
-          go-version: stable
-          check-latest: true
-
-      - name: Cache Go modules
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-stable-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Install dependencies
-        run: go mod download
-
-      - name: Modern Go code check
-        run: go run golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest -test ./...
-
   modern-check:
     name: Modern Go Check
     runs-on: ubuntu-latest
