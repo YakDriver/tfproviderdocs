@@ -23,6 +23,7 @@ files:
     - ".sh"
     - ".yml"
     - ".yaml"
+    - ".html.markdown"
 
   comment_styles:
     go: "//"
@@ -30,9 +31,14 @@ files:
     sh: "#"
     yaml: "#"
     yml: "#"
+    html_markdown: "<!--"
 
   placement_exceptions:
     markdown_heading: true
+
+  below_frontmatter:
+    - ".md"
+    - ".html.markdown"
 
 detection:
   skip_generated: false
