@@ -1,4 +1,6 @@
 # Repository Guidelines
+<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 
 ## Project Purpose & Usage
 `tfproviderdocs` operates as a CI/CD safeguard for Terraform providers, validating user-facing docs for required structure, headings, and metadata. When supplied a provider schema in JSON (via `terraform providers schema -json`), it cross-references expected data sources and resources so engineers do not hand-maintain checklists. Providers such as AWS invoke the tool within release pipelines, for example:

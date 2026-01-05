@@ -1,3 +1,6 @@
+<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
+
 ---
 subcategory: "Example"
 sidebar_current: "example_thing"

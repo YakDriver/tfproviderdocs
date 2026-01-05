@@ -1,3 +1,6 @@
+<!-- Copyright (c) HashiCorp, Inc. 2019-2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
+
 ## Attributes
 
 In addition to all arguments above, the following attributes are exported:

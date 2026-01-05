@@ -1,0 +1,47 @@
+# Copyright (c) HashiCorp, Inc. 2019-2026
+# "SPDX-License-Identifier: MPL-2.0"
+
+# tfproviderdocs Copyplop Configuration
+copyright:
+  holder: "HashiCorp, Inc."
+  start_year: 2019
+  current_year: 2026
+  format: "Copyright (c) {{.Holder}} {{.StartYear}}-{{.CurrentYear}}"
+
+license:
+  enabled: true
+  identifier: "MPL-2.0"
+  format: "SPDX-License-Identifier: {{.Identifier}}"
+
+files:
+  exclude_paths:
+    - "CHANGELOG.md"
+    - "LICENSE"
+  extensions:
+    - ".go"
+    - ".md"
+    - ".sh"
+    - ".yml"
+    - ".yaml"
+
+  comment_styles:
+    go: "//"
+    md: "<!--"
+    sh: "#"
+    yaml: "#"
+    yml: "#"
+
+  placement_exceptions:
+    markdown_heading: true
+
+detection:
+  skip_generated: false
+  generated_patterns:
+    - "Code generated"
+    - "DO NOT EDIT"
+  max_scan_lines: 20
+
+third_party:
+  action: "above"
+  patterns:
+    - "Copyright.*[a-zA-Z0-9].*"
