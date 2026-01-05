@@ -5,6 +5,8 @@ page_title: "Test: test_full"
 description: |-
   Manages a Test Full
 ---
+<!-- Copyright IBM Corp. 2019, 2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 
 # Resource: test_full
 

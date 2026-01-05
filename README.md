@@ -1,4 +1,6 @@
 # tfproviderdocs
+<!-- Copyright IBM Corp. 2019, 2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 
 A documentation tool for [Terraform Provider](https://www.terraform.io/docs/providers/index.html) code.
 

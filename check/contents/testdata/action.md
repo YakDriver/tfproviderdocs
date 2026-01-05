@@ -5,6 +5,8 @@ page_title: "Test: test_action"
 description: |-
   Manages a Test Action
 ---
+<!-- Copyright IBM Corp. 2019, 2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 
 # Action: test_action
 

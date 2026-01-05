@@ -4,6 +4,8 @@ page_title: "Example: example_function"
 description: |-
   Example description.
 ---
+<!-- Copyright IBM Corp. 2019, 2026 -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 
 # Function: example_function
 
