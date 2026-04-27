@@ -42,6 +42,11 @@ func TestCheckImportSection(t *testing.T) {
 			ProviderName: "test",
 		},
 		{
+			Name:         "passing \"For example\" on new line",
+			Path:         "testdata/import/passing_for_example_on_newline.md",
+			ProviderName: "test",
+		},
+		{
 			Name:         "wrong code block resource type",
 			Path:         "testdata/import/wrong_code_block_resource_type.md",
 			ProviderName: "test",
