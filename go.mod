@@ -7,7 +7,7 @@ require (
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/terraform-json v0.27.2
-	github.com/mattn/go-colorable v0.1.14
+	github.com/mattn/go-colorable v0.1.15
 	github.com/mitchellh/cli v1.1.5
 	github.com/yuin/goldmark v1.8.2
 	github.com/yuin/goldmark-meta v1.1.0
