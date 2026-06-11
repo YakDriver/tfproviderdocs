@@ -2,6 +2,13 @@
 <!-- Copyright IBM Corp. 2019, 2026 -->
 <!-- SPDX-License-Identifier: MPL-2.0 -->
 
+> ## ⚠️ Deprecated
+>
+> **`tfproviderdocs` is deprecated and no longer maintained.** All functionality
+> has been superseded by [**swissshepherd**](https://github.com/YakDriver/swissshepherd).
+> Please migrate to swissshepherd; this repository will receive no further
+> releases or bug fixes.
+
 A documentation tool for [Terraform Provider](https://www.terraform.io/docs/providers/index.html) code.
 
 ## Install

@@ -1,3 +1,6 @@
+// Deprecated: tfproviderdocs is no longer maintained. All functionality has
+// been superseded by github.com/YakDriver/swissshepherd. Please migrate:
+// https://github.com/YakDriver/swissshepherd
 module github.com/YakDriver/tfproviderdocs
 
 go 1.25.5

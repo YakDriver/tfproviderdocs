@@ -2,6 +2,13 @@
 <!-- Copyright IBM Corp. 2019, 2026 -->
 <!-- SPDX-License-Identifier: MPL-2.0 -->
 
+> ## ⚠️ Deprecated
+>
+> `tfproviderdocs` is deprecated and no longer maintained. All functionality
+> has been superseded by [swissshepherd](https://github.com/YakDriver/swissshepherd).
+> New work should target swissshepherd; this repository will receive no
+> further releases or bug fixes.
+
 ## Project Purpose & Usage
 `tfproviderdocs` operates as a CI/CD safeguard for Terraform providers, validating user-facing docs for required structure, headings, and metadata. When supplied a provider schema in JSON (via `terraform providers schema -json`), it cross-references expected data sources and resources so engineers do not hand-maintain checklists. Providers such as AWS invoke the tool within release pipelines, for example:
 
