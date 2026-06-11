@@ -64,10 +64,6 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
-      - name: Generate release notes
-        run: |
-          sed -n -e "1{/# v/d;}" -e "2{/^$/d;}" -e "/# $(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags)/q;p" CHANGELOG.md > RELEASE-NOTES.md
-
       - name: Check configuration
         uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
         with:
@@ -84,4 +80,4 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
         with:
-          args: release --release-notes RELEASE-NOTES.md --clean
+          args: release --clean
